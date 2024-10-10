@@ -42,7 +42,7 @@ class District(object):
     
 
     def get(self):
-        return request(f"district/{self.key}").json()
+        return request(f"district/{self.key}/events").json()[0]["district"]
 
     def get_events(self):
         return request(f"district/{self.key}/events").json()
@@ -56,11 +56,10 @@ class District(object):
 
 # Class to retrieve API data for a specific event.
 class Event(object):
-    def __init__(self, key, name):
+    def __init__(self, key):
         if not type(key) == str:
             raise(TypeError("Event key should be a string."))
         self.key = key
-        self.name = name
 
     
     def get_teams(self):
