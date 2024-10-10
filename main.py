@@ -19,11 +19,14 @@ def index():
 
 
 
+
 # API Endpoints:
     
+
 # Return the districts for the current year.
 @app.route("/endpoint/districts")
 def get_districts():
+    # Get districts.
     districts = year.get_districts()
 
     # Remove unnecessary data.
@@ -35,9 +38,11 @@ def get_districts():
     # Return all of the district data.
     return districts
     
+
 # Return the events in a given district.
 @app.route("/endpoint/events/district/<district_key>")
 def get_events_in_district(district_key):
+    # Get events.
     events = tbaapi.District(district_key).get_events()
 
     # Save the wanted data from 'events' to 'events2'.
@@ -59,9 +64,11 @@ def get_events_in_district(district_key):
     # Return all of the simplified events data.
     return events2
 
+
 # Return the matches in a given event.
 @app.route("/endpoint/matches/event/<event_key>")
 def get_matches_in_event(event_key):
+    # Get matches.
     matches = tbaapi.Event(event_key).get_matches()
 
     # Save the wanted data from 'matches' to 'matches2'.
@@ -79,9 +86,11 @@ def get_matches_in_event(event_key):
     # Return all of the simplified match data.
     return matches2
 
+
 # Return the teams in a given district. 
 @app.route("/endpoint/teams/district/<district_key>")
 def get_teams_in_district(district_key):
+    # Get teams.
     teams = tbaapi.District(district_key).get_teams()
 
     # Save the wanted data from 'teams' to 'teams2'.
@@ -107,9 +116,11 @@ def get_teams_in_district(district_key):
     # Return all of the simplified team data.
     return teams2
 
+
 # Return the teams at a given event.
 @app.route("/endpoint/teams/event/<event_key>")
 def get_teams_in_event(event_key):
+    # Get teams.
     teams = tbaapi.Event(event_key).get_teams()
 
     # Save the wanted data from 'teams' to 'teams2'.
