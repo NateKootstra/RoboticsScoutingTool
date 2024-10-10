@@ -1,13 +1,13 @@
 from flask import Flask, render_template, send_from_directory, url_for
 import os.path
 import random
+from datetime import datetime
 
 import tbaapi
 
 app = Flask(__name__)
 
-year = tbaapi.Year(2024)
-
+year = tbaapi.Year(datetime.now().year)
 
 
 # Public pages:
@@ -150,3 +150,8 @@ def get_teams_in_event(event_key):
 # Start the application.
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5001)
+
+
+
+
+# TODO: Start work on homepage and account system. Possibly an encryption method?
