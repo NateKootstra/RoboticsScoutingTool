@@ -1,0 +1,36 @@
+nav {
+    padding: 0.75vw;
+    background-color: rgb(35, 27, 27);
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+nav h1 {
+    margin-top: 0.25vw;
+    margin-left: 0.25vw;
+    color: rgb(255, 255, 255);
+    font-size: 4vw;
+}
+
+nav div img {
+    margin-left: 1.5vw;
+    height: 5vw;
+    width: 5vw;
+    display: inline-block;
+}
+
+nav div a img {
+    margin-left: 1.5vw;
+    height: 5vw;
+    width: 5vw;
+    display: inline-block;
+}
+
+nav div a img.divider {
+    width: 0.5vw;
+    margin-left: 3vw;
+    margin-right: 1.5vw;
+    overflow: hidden;
+}

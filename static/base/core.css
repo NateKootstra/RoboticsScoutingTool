@@ -1,0 +1,31 @@
+body {
+    background-color: rgb(246, 239, 238);
+    height: 100%;
+    overflow-x: hidden;
+}
+
+* {
+    font-family: "Courier New", "Lucida Console", monospace;
+    color: rgb(230, 255, 230);
+    margin: 0;
+    padding: 0;
+}
+
+span.link {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+
+    z-index: 1;
+}
+
+.centercontents {
+    text-align: center;
+}
+
+.centermargins {
+    margin-left: auto;
+    margin-right: auto;
+}

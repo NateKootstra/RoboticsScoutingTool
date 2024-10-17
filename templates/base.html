@@ -1,0 +1,22 @@
+<!doctype html>
+<title>Test</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='base/core.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='base/navbar.css') }}">
+{% block links %}{% endblock %}
+
+<nav>
+    <h1>Scouting</h1>
+    <div class="icons">
+        <a href=https://google.com><img src="{{ url_for('static', filename='icons/scout.png') }}"></a><a
+            href="rankings"><img src="{{ url_for('static', filename='icons/rankings.png') }}"></a><a
+            href=https://google.com><img src="{{ url_for('static', filename='icons/data.png') }}"></a><a
+            href=https://google.com><img class="divider"
+                src="{{ url_for('static', filename='icons/divider.png') }}"></a><a href=https://google.com><img
+                src="{{ url_for('static', filename='icons/account.png') }}"></a>
+    </div>
+
+
+</nav>
+
+{% block content %}{% endblock %}
