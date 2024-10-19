@@ -20,7 +20,17 @@ def index():
 # Team rankings.
 @app.route("/rankings")
 def rankings():
-    return render_template('teamlist.html')
+    return render_template('rankings.html')
+
+# Sign-in page.
+@app.route("/signin")
+def signin():
+    return render_template('signin.html')
+
+# Account dashboard.
+@app.route("/account")
+def account():
+    return render_template('account.html')
 
 
 
@@ -106,7 +116,7 @@ def get_teams_in_district(district_key):
         newteam["number"] = team["team_number"]
         # Add the website if it's listed.
         if not team["website"] == None:
-            newteam["website"] = team["website"]
+            newteam["website"] = team["website"].lower().split(" ")[0].removesuffix("/")
         # Properly format the postal codes and make sure the site doesn't crash if the team hasn't listed theirs, merging all of the location data (except address) into 'location'.
         if team["country"] == "Canada":
             if not team["postal_code"] == None:
@@ -120,7 +130,43 @@ def get_teams_in_district(district_key):
 
     # Return all of the simplified team data.
     return sorted(teams2, key=lambda d: d["number"])
-app.jinja_env.globals.update(get_teams_in_district=get_teams_in_district)
+
+
+# Return the rankings in a given district. 
+@app.route("/endpoint/rankings/district/<district_key>")
+def get_rankings_in_district(district_key):
+    # Get rankings and teams.
+    rankings = tbaapi.District(district_key).get_rankings()
+    teams = get_teams_in_district(district_key)
+    # Handle what to do when rankings haven't been posted.
+    if rankings == None:
+        rankings2 = []
+        for team in teams:
+            team2 = {"points" : 0, "rank" : 1}
+            team2["team"] = team
+            rankings2.append(team2)
+        return rankings2
+
+    # Save the wanted data from rankings to rankings2.
+    rankings2 = []
+    for rank in rankings:
+        rank2 = {}
+        rank2["points"] = rank["point_total"]
+        rank2["rank"] = rank["rank"]
+        # Find the team from the team key.
+        team = None;
+        for team2 in teams:
+            if "frc" + str(team2["number"]) == rank["team_key"]:
+                team = team2
+        # Only add the ranking if the team could be found.
+        if not team == None:
+            rank2["team"] = team
+            rankings2.append(rank2)
+    # Return all of the rankings data.
+    return rankings2
+
+        
+app.jinja_env.globals.update(get_rankings_in_district=get_rankings_in_district)
 
 # Return the teams at a given event.
 @app.route("/endpoint/teams/event/<event_key>")
@@ -136,7 +182,7 @@ def get_teams_in_event(event_key):
         newteam["number"] = team["team_number"]
         # Add the website if it's listed.
         if not team["website"] == None:
-            newteam["website"] = team["website"]
+            newteam["website"] = team["website"].lower().split(" ")[0].removesuffix("/")
         # Properly format the postal codes and make sure the site doesn't crash if the team hasn't listed theirs, merging all of the location data (except address) into 'location'.
         if team["country"] == "Canada":
             if not team["postal_code"] == None:

@@ -1,0 +1,19 @@
+footer {
+    padding: 0.75vw;
+    background-color: rgb(35, 27, 27);
+}
+
+footer h1 {
+    margin-top: 0.25vw;
+    margin-left: 0.25vw;
+    color: rgb(255, 255, 255);
+    font-size: calc(1.5vw + 1.5vh);
+}
+
+footer a {
+    margin-left: 0.26vw;
+    color: rgb(255, 255, 255);
+    font-size: calc(1vw + 1vh);
+    margin-top: calc(0.2vw + 0.2vh);
+    display: block;
+}

@@ -1,22 +1,39 @@
 <!doctype html>
 <title>Test</title>
 
-<link rel="stylesheet" href="{{ url_for('static', filename='base/core.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='base/navbar.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/base/core.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/base/navbar.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/base/subtitle.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/base/footer.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/base/alert.css') }}">
+
+<script src="{{ url_for('static', filename='js/navbar.js') }}"></script>
 {% block links %}{% endblock %}
 
 <nav>
     <h1>Scouting</h1>
     <div class="icons">
-        <a href=https://google.com><img src="{{ url_for('static', filename='icons/scout.png') }}"></a><a
-            href="rankings"><img src="{{ url_for('static', filename='icons/rankings.png') }}"></a><a
-            href=https://google.com><img src="{{ url_for('static', filename='icons/data.png') }}"></a><a
-            href=https://google.com><img class="divider"
-                src="{{ url_for('static', filename='icons/divider.png') }}"></a><a href=https://google.com><img
-                src="{{ url_for('static', filename='icons/account.png') }}"></a>
+        <img onclick="viewRankings()" src="{{ url_for('static', filename='images/icons/rankings.png') }}">
+        <img src="{{ url_for('static', filename='images/icons/divider.png') }}" class="divider">
+        <img onclick="viewScout()" src="{{ url_for('static', filename='images/icons/scout.png') }}">
+        <img onclick="viewData()" src="{{ url_for('static', filename='images/icons/data.png') }}">
+        <img src="{{ url_for('static', filename='images/icons/divider.png') }}" class="divider">
+        <img onclick="viewAccount()" src="{{ url_for('static', filename='images/icons/account.png') }}">
     </div>
-
-
 </nav>
 
+<div class="subtitle">{% block subtitle %}{% endblock %}</div>
+
 {% block content %}{% endblock %}
+
+<footer>
+    <h1>Developed by Nate Kootstra</h1>
+    <a href="mailto:natekootstra@gmail.com">natekootstra@gmail.com</a>
+    <a href="https://natekootstra.dev">https://natekootstra.dev</a>
+    <a href="https://github.com/natekootstra">https://github.com/natekootstra</a>
+</footer>
+
+<div class="alert" onclick="hide()">
+    <p>This feature doesn't work if you don't have an account! Please sign in with the account given to you by your
+        team lead. If you would like to register a team, please reach out to me using the email found in the footer.</p>
+</div>

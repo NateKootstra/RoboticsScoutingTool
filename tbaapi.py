@@ -82,3 +82,6 @@ class Team(object):
 
     def get(self):
         return request(f"team/{self.key}").json()
+
+
+print(District("2024ont").get_rankings()[0])

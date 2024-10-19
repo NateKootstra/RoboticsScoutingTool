@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+
+
+{% block links %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/rankings/core.css') }}">
+{% endblock %}
+
+
+
+{% block subtitle %}
+<h2>District Rankings</h2>
+{% endblock %}
+
+
+
+{% block content %}
+
+<section class="teams">
+    {% for rank in get_rankings_in_district("2025ont") %}
+    {% if "website" in rank["team"].keys() %}
+    <div class="teamcard">
+        <p>Rank #{{ rank["rank"] }}</p>
+        <p>{{ rank["points"] }} Points</p>
+        <p>{{ rank["team"]["name"] }}</p>
+        <br>
+        <p>{{ rank["team"]["number"] }}</p>
+        <br>
+        <p>{{ rank["team"]["website"] }}</p>
+        <a href={{ rank["team"]["website"] }}><span></span></a>
+    </div>
+    {% else %}
+    <div class="teamcard">
+        <p>Rank #{{ rank["rank"] }}</p>
+        <p>{{ rank["points"] }} Points</p>
+        <p>{{ rank["team"]["name"] }}</p>
+        <br>
+        <p>{{ rank["team"]["number"] }}</p>
+    </div>
+    {% endif %}
+    {% endfor %}
+</section>
+
+{% endblock %}
