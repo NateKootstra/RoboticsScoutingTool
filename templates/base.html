@@ -11,7 +11,10 @@
 {% block links %}{% endblock %}
 
 <nav>
-    <h1>Scouting</h1>
+    <div class="title">
+        <img onclick="viewHome()" src="{{ url_for('static', filename='images/icons/logo.png') }}">
+        <cite>SpeedScout</cite>
+    </div>
     <div class="icons">
         <img onclick="viewRankings()" src="{{ url_for('static', filename='images/icons/rankings.png') }}">
         <img src="{{ url_for('static', filename='images/icons/divider.png') }}" class="divider">
