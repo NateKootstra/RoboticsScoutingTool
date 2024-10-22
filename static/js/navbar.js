@@ -9,6 +9,9 @@ function show() {
 
 
 
+function viewHome() {
+    window.location.href = "/";
+}
 function viewRankings() {
     let loggedIn = false;
     if (loggedIn) {
