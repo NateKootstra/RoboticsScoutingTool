@@ -9,7 +9,6 @@ app = Flask(__name__)
 
 year = tbaapi.Year(datetime.now().year)
 
-
 # Public pages:
     
 # Home page.
@@ -205,4 +204,4 @@ if __name__ == "__main__":
 
 
 
-# TODO: Start work on homepage and account system. Possibly an encryption method?
+# TODO: Start work on homepage. Possibly an encryption method?

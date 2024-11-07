@@ -1,5 +1,17 @@
 {% extends 'base.html' %}
 
+{% block links %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/signin/input.css') }}">
+{% endblock %}
+
 {% block subtitle %}
 <h2>Sign-in</h2>
+{% endblock %}
+
+{% block content %}
+<div class="centercontents">
+    <input type="text" placeholder="Team number..."></input>
+    <input type="text" placeholder="Name..."></input>
+    <input type="password" placeholder="Password..."></input>
+</div>
 {% endblock %}
