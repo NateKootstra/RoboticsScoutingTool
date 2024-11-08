@@ -5,5 +5,5 @@
     margin-top: 0.75vw;
 
     text-align: center;
-    font-size: 4vw;
+    font-size: calc(3vw + 2vh);
 }

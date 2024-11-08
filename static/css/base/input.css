@@ -3,10 +3,10 @@ input {
 
     background-color: rgb(35, 27, 27);
     color: rgb(246, 239, 238);
-    border: 0.35vw solid rgb(175, 187, 242);
+    border: 0.5vw solid rgb(175, 187, 242);
 }
 
 input:focus {
     outline: none;
-    border: 0.35vw solid rgb(150, 73, 203);
+    border: 0.5vw solid rgb(150, 73, 203);
 }

@@ -1,5 +1,6 @@
 <!doctype html>
-<title>Test</title>
+<title>SpeedScout</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/base/core.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/base/navbar.css') }}">
@@ -28,7 +29,9 @@
 
 <div class="subtitle">{% block subtitle %}{% endblock %}</div>
 
-{% block content %}{% endblock %}
+<div class="content">
+    {% block content %}{% endblock %}
+</div>
 
 <footer>
     <h1>Developed by Nate Kootstra</h1>
