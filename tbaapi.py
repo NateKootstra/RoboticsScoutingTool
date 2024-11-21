@@ -1,3 +1,7 @@
+# TBAAPI.PY
+# Library used by MAIN.PY to make requests to The Blue Alliance.
+
+
 import requests
 
 
@@ -82,6 +86,3 @@ class Team(object):
 
     def get(self):
         return request(f"team/{self.key}").json()
-
-
-print(District("2024ont").get_rankings()[0])

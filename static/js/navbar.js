@@ -13,43 +13,43 @@ function viewHome() {
     window.location.href = "/";
 }
 function viewRankings() {
-    let loggedIn = false;
+    let loggedIn = checkCookie("username");
     if (loggedIn) {
-        window.location.href = "rankings";
+        window.location.href = "/rankings";
     }
     else {
         show()
     }
 }
 function viewAccount() {
-    let loggedIn = false;
+    let loggedIn = checkCookie("username");
 
     if (loggedIn)
-        window.location.href = "account";
+        window.location.href = "/account";
     else
-        window.location.href = "signin";
+        window.location.href = "/signin";
 }
 function viewData() {
-    let loggedIn = false;
+    let loggedIn = checkCookie("username");
 
     if (loggedIn)
-        window.location.href = "data";
+        window.location.href = "/data";
     else
         show()
 }
 function viewScout() {
-    let loggedIn = false;
+    let loggedIn = checkCookie("username");
 
     if (loggedIn)
-        window.location.href = "rankings";
+        window.location.href = "/rankings";
     else
         show()
 }
 function viewRankings() {
-    let loggedIn = false;
+    let loggedIn = checkCookie("username");
 
     if (loggedIn)
-        window.location.href = "rankings";
+        window.location.href = "/rankings";
     else
         show()
 }

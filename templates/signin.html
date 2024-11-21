@@ -2,6 +2,8 @@
 
 {% block links %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/signin/input.css') }}">
+
+<script src="{{ url_for('static', filename='js/signin.js') }}"></script>
 {% endblock %}
 
 {% block subtitle %}
@@ -10,10 +12,10 @@
 
 {% block content %}
 <div class="centercontents">
-    <input type="text" placeholder="Team number..."></input>
-    <input type="text" placeholder="Name..."></input>
-    <input type="password" placeholder="Password..."></input>
+    <input id="team" type="text" placeholder="Team number"></input>
+    <input id="username" type="text" placeholder="Name"></input>
+    <input id="password" type="password" placeholder="Password"></input>
     <br>
-    <button>Sign In</button>
+    <button onclick="signIn()">Sign In</button>
 </div>
 {% endblock %}
