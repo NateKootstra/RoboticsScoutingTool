@@ -11,3 +11,7 @@ function signIn() {
 
     window.location.href = `/endpoint/signin/${team}/${username}/${password}`;
 }
+
+function signOut() {
+    window.location.href = "/endpoint/signout";
+}

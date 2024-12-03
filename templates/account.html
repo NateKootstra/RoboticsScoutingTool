@@ -1,5 +1,17 @@
 {% extends 'base.html' %}
 
+{% block links %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/account/buttons.css') }}">
+
+<script src="{{ url_for('static', filename='js/authentication.js') }}"></script>
+{% endblock %}
+
 {% block subtitle %}
 <h2>Account Dashboard</h2>
+{% endblock %}
+
+{% block content %}
+<div class="centercontents">
+    <button onclick="signOut()">Sign Out</button>
+</div>
 {% endblock %}

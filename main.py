@@ -11,8 +11,8 @@ import tbaapi
 from authentication import authenticate
 
 
+domain = 'http://127.0.0.1:5001'
 app = Flask(__name__)
-
 year = tbaapi.Year(datetime.now().year)
 
 # Public pages:
@@ -48,7 +48,7 @@ def account():
 def sign_in(team, username, password):
     if authenticate(team, username, password):
         # Redirect user to the home page.
-        response = make_response(redirect("http://127.0.0.1:5001/"))
+        response = make_response(redirect(f'{domain}/'))
         # Set cookies.
         response.set_cookie('team', team)
         response.set_cookie('username', username)
@@ -56,7 +56,19 @@ def sign_in(team, username, password):
         # Return response.
         return response
     else:
-        return redirect("http://127.0.0.1:5001/signin?failed=true")
+        # Redirect client if the credentials are invalid.
+        return redirect(f'{domain}/signin?failed=true')
+
+# Sign out the client.
+@app.route('/endpoint/signout')
+def sign_out():
+    response = make_response(redirect(f'{domain}/'))
+    # Set cookies.
+    response.delete_cookie('team')
+    response.delete_cookie('username')
+    response.delete_cookie('password')
+    # Return response.
+    return response
 
 
 # Return the districts for the current year.
