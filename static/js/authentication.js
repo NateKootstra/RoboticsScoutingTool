@@ -9,9 +9,9 @@ function signIn() {
     if (password == "")
         password = "null";
 
-    window.location.href = `/endpoint/signin/${team}/${username}/${password}`;
+    window.location.href = `/signin/${team}/${username}/${password}`;
 }
 
 function signOut() {
-    window.location.href = "/endpoint/signout";
+    window.location.href = "/signout";
 }

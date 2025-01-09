@@ -17,7 +17,7 @@
 {% block content %}
 
 <section class="teams">
-    {% for rank in get_rankings_in_district("2025ont") %}
+    {% for rank in get_rankings_in_district() %}
     {% if "website" in rank["team"].keys() %}
     <div class="teamcard">
         <p>Rank #{{ rank["rank"] }}</p>

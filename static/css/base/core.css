@@ -34,6 +34,7 @@ span.link {
 
 .centercontents {
     text-align: center;
+    height: fit-content;
 }
 
 .centermargins {

@@ -22,3 +22,9 @@ footer a {
     margin-top: calc(0.2vw + 0.2vh);
     display: block;
 }
+
+footer s {
+    color: rgb(255, 255, 255);
+    font-size: calc(1vw + 1vh);
+    display: block;
+}

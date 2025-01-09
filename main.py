@@ -2,18 +2,25 @@
 # The runnable script that runs the web server.
 
 
-from flask import Flask, render_template, send_from_directory, url_for, make_response, redirect
+from flask import Flask, render_template, send_from_directory, url_for, make_response, redirect, request
 import os.path
 import random
 from datetime import datetime
 
 import tbaapi
-from authentication import authenticate
+from authentication import authenticate, getName, getAdmin
 
 
 domain = 'http://127.0.0.1:5001'
 app = Flask(__name__)
 year = tbaapi.Year(datetime.now().year)
+
+# Returns info regarding the current account.
+def get_account():
+    team = request.cookies["team"]
+    return { 'team': team, 'teamname': tbaapi.Team(int(team)).get()['nickname'], 'name': getName(team, request.cookies["username"]), 'district': get_district_for_team(int(team))['name']}
+
+app.jinja_env.globals.update(get_account=get_account)
 
 # Public pages:
     
@@ -37,18 +44,23 @@ def signin():
 def account():
     return render_template('account.html')
 
+# Admin Account dashboard.
+@app.route('/account_admin')
+def account_admin():
+    return render_template('account_admin.html')
 
 
-
-# API Endpoints:
+# Internally facing:
     
-
 # Sign in the client.
-@app.route('/endpoint/signin/<team>/<username>/<password>')
+@app.route('/signin/<team>/<username>/<password>')
 def sign_in(team, username, password):
     if authenticate(team, username, password):
         # Redirect user to the home page.
-        response = make_response(redirect(f'{domain}/'))
+        if getAdmin(team, username):
+            response = make_response(redirect(f'{domain}/account_admin'))
+        else:
+            response = make_response(redirect(f'{domain}/account'))
         # Set cookies.
         response.set_cookie('team', team)
         response.set_cookie('username', username)
@@ -60,15 +72,19 @@ def sign_in(team, username, password):
         return redirect(f'{domain}/signin?failed=true')
 
 # Sign out the client.
-@app.route('/endpoint/signout')
+@app.route('/signout')
 def sign_out():
-    response = make_response(redirect(f'{domain}/'))
+    response = make_response(redirect(f'{domain}/signin'))
     # Set cookies.
     response.delete_cookie('team')
     response.delete_cookie('username')
     response.delete_cookie('password')
     # Return response.
     return response
+
+
+# API Endpoints:
+
 
 
 # Return the districts for the current year.
@@ -134,6 +150,14 @@ def get_matches_in_event(event_key):
     # Return all of the simplified match data.
     return matches2
 
+# Return the district a team is competing in.
+@app.route('/endpoint/team_district/<team_number>')
+def get_district_for_team(team_number):
+    districts = tbaapi.Team(int(team_number)).getDistrict()
+    for district in districts:
+            if district['year'] == 2025:
+                return { 'key' : district['key'],
+                         'name' : district['display_name'] }
 
 # Return the teams in a given district. 
 @app.route('/endpoint/teams/district/<district_key>')
@@ -167,7 +191,8 @@ def get_teams_in_district(district_key):
 
 # Return the rankings in a given district. 
 @app.route('/endpoint/rankings/district/<district_key>')
-def get_rankings_in_district(district_key):
+def get_rankings_in_district():
+    district_key = get_district_for_team(request.cookies["team"])['key']
     # Get rankings and teams.
     rankings = tbaapi.District(district_key).get_rankings()
     teams = get_teams_in_district(district_key)
@@ -194,11 +219,50 @@ def get_rankings_in_district(district_key):
         # Only add the ranking if the team could be found.
         if not team == None:
             rank2['team'] = team
+            rank2['number'] = team['number']
             rankings2.append(rank2)
     # Return all of the rankings data.
-    return rankings2
+    rankings3 = []
+    loop = True
+    i = 0
+    i3 = 1
+    while loop:
+        try:
+            pointCount = rankings2[i]['points']
+        except:
+            loop = False
 
-        
+        section = []
+
+        loop2 = True
+        i2 = 0
+        while loop2:
+            if rankings2[i + i2]['points'] == pointCount:
+                section.append({ 'points' : rankings2[i + i2]['points'], 'rank' : i3, 'team' : rankings2[i + i2]['team'] })
+            else:
+                loop2 = False
+            i2 += 1
+            if (i + i2) >= len(rankings2):
+                loop2 = False
+                loop = False
+            
+        section = sorted(section, key=lambda d: d['team']['number'])
+        for team in section:
+            rankings3.append(team)
+
+        i += i2
+        i3 += 1
+
+
+    numbers = []
+    for ranking in rankings2:
+        numbers.append(ranking['team']['number'])
+    for ranking in rankings3:
+        if not ranking['team']['number'] in numbers:
+            print(ranking)
+    return rankings3
+
+
 app.jinja_env.globals.update(get_rankings_in_district=get_rankings_in_district)
 
 # Return the teams at a given event.
