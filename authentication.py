@@ -1,7 +1,7 @@
 # AUTHENTICATION.PY
 # Library used by MAIN.PY to handle user authentication.
 
-
+import os
 import json
 import string
 import random
@@ -23,6 +23,7 @@ def authenticate(team = "", username = "", password = ""):
     else:
         return False
 
+# Return the proper name of an account.
 def getName(team, username):
     lowerUser = username.lower()
     try:
@@ -31,10 +32,12 @@ def getName(team, username):
         realUsername = userData["username"]
         realName = userData["name"]
         user.close()
-        return realName + f" ({realUsername})"
+        return realName + f" - {realUsername}"
     except:
         return "Name Not Found"
 
+# Check if an account is an admin account. 
+# NOTE: THIS IS NOT USED FOR ACTUAL VALIDATION AS HAVING THE CLIENT HANDLE WHETHER OR NOT IT'S AN ADMIN IS NOT SECURE.
 def getAdmin(team, username):
     lowerUser = username.lower()
     try:
@@ -45,3 +48,16 @@ def getAdmin(team, username):
         return isAdmin
     except:
         return False
+
+# Return a list of accounts for a team.
+def getAccounts(team):
+    users = []
+    for filename in os.listdir(f"data/{team}/members"):
+        user = open(f"data/{team}/members/{filename}")
+        userData = json.loads(user.read())
+        realUsername = userData["username"]
+        realName = userData["name"]
+        if not userData['admin']:
+            users.append({ "name" : realName + f" - {realUsername}", "password" : userData["password"] })
+        user.close()
+    return users

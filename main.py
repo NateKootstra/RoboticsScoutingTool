@@ -8,7 +8,7 @@ import random
 from datetime import datetime
 
 import tbaapi
-from authentication import authenticate, getName, getAdmin
+from authentication import authenticate, getName, getAdmin, getAccounts
 
 
 domain = 'http://127.0.0.1:5001'
@@ -19,11 +19,19 @@ year = tbaapi.Year(datetime.now().year)
 def get_account():
     team = request.cookies["team"]
     return { 'team': team, 'teamname': tbaapi.Team(int(team)).get()['nickname'], 'name': getName(team, request.cookies["username"]), 'district': get_district_for_team(int(team))['name']}
-
 app.jinja_env.globals.update(get_account=get_account)
 
+# Returns a list of accounts.
+def get_account_list():
+    team = request.cookies["team"]
+    if authenticate(team, request.cookies["username"], request.cookies["password"]) and getAdmin(team, request.cookies["username"]):
+        return getAccounts(team)
+    return []
+app.jinja_env.globals.update(get_account_list=get_account_list)
+
+
 # Public pages:
-    
+
 # Home page.
 @app.route('/')
 def index():
