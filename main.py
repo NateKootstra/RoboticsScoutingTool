@@ -8,7 +8,7 @@ import random
 from datetime import datetime
 
 import tbaapi
-from authentication import authenticate, getName, getAdmin, getAccounts
+from accounts import authenticate, getName, getAdmin, getAccounts, deleteUser, addUser
 
 
 domain = 'http://127.0.0.1:5001'
@@ -50,12 +50,10 @@ def signin():
 # Account dashboard.
 @app.route('/account')
 def account():
-    return render_template('account.html')
-
-# Admin Account dashboard.
-@app.route('/account_admin')
-def account_admin():
-    return render_template('account_admin.html')
+    if authenticate(request.cookies["team"], request.cookies["username"], request.cookies["password"]) and getAdmin(request.cookies["team"], request.cookies["username"]):
+        return render_template('account_admin.html')
+    else:
+        return render_template('account.html')
 
 
 # Internally facing:
@@ -65,10 +63,7 @@ def account_admin():
 def sign_in(team, username, password):
     if authenticate(team, username, password):
         # Redirect user to the home page.
-        if getAdmin(team, username):
-            response = make_response(redirect(f'{domain}/account_admin'))
-        else:
-            response = make_response(redirect(f'{domain}/account'))
+        response = make_response(redirect(f'{domain}/account'))
         # Set cookies.
         response.set_cookie('team', team)
         response.set_cookie('username', username)
@@ -87,6 +82,26 @@ def sign_out():
     response.delete_cookie('team')
     response.delete_cookie('username')
     response.delete_cookie('password')
+    # Return response.
+    return response
+
+# Delete user.
+@app.route('/deleteuser/<username>')
+def delete_user(username):
+    response = make_response(redirect(f'{domain}/account'))
+    # Delete user only if the user is verified as an admin.
+    if authenticate(request.cookies["team"], request.cookies["username"], request.cookies["password"]) and getAdmin(request.cookies["team"], request.cookies["username"]):
+        deleteUser(request.cookies["team"], username)
+    # Return response.
+    return response
+
+# Add user.
+@app.route('/adduser/<username>/<name>/<password>')
+def add_user(username, name, password):
+    response = make_response(redirect(f'{domain}/account'))
+    # Add user only if the user is verified as an admin.
+    if authenticate(request.cookies["team"], request.cookies["username"], request.cookies["password"]) and getAdmin(request.cookies["team"], request.cookies["username"]):
+        addUser(request.cookies["team"], username, name, password)
     # Return response.
     return response
 

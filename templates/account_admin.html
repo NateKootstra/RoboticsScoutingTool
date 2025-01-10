@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/account/dashboard.css') }}">
 
 <script src="{{ url_for('static', filename='js/authentication.js') }}"></script>
+<script src="{{ url_for('static', filename='js/usermanager.js') }}"></script>
 {% endblock %}
 
 {% block subtitle %}
@@ -33,6 +34,7 @@
     {% endwith %}
 </div>
 
+
 <div class="centercontents">
     <h3 class="subtitle">Users</h3>
 </div>
@@ -40,9 +42,19 @@
     {% for account in get_account_list() %}
     <div class="adminview">
         <h3>{{ account['name'] }}</h3>
-        <h3>{{ account['password'] }}</h3>
+        <div class="adminviewright">
+            <h3>{{ account['password'] }}</h3>
+            <img onclick="deleteUser('{{ account['username'] }}')"
+                src="{{ url_for('static', filename='images/icons/trash.png') }}" class="trash">
+        </div>
     </div>
     {% endfor %}
+    <div class="addaccount centercontents">
+        <input id="username" type="text" placeholder="Enter Username"></input>
+        <input id="name" type="text" placeholder="Enter Name"></input>
+        <input id="password" type="text" placeholder="Enter Password"></input>
+        <button onclick="addUser()">Add User</button>
+    </div>
 </div>
 
 <div class="centercontents"><button onclick="signOut()">Sign Out</button>

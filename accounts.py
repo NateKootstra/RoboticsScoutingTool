@@ -58,6 +58,15 @@ def getAccounts(team):
         realUsername = userData["username"]
         realName = userData["name"]
         if not userData['admin']:
-            users.append({ "name" : realName + f" - {realUsername}", "password" : userData["password"] })
+            users.append({ "name" : realName + f" - {realUsername}", "username" : realUsername, "password" : userData["password"] })
         user.close()
     return users
+
+def deleteUser(team, username):
+    os.remove(f"data/{team}/members/{username}.json")
+    
+def addUser(team, username, name, password):
+    if not os.path.isfile(f"data/{team}/members/{username}.json"):
+        with open(f"data/{team}/members/{username}.json", "w") as newUser:
+            newUser.write(json.dumps({ "username" : username, "name" : name, "password" : password, "admin" : False}, indent=4))
+            newUser.close()
