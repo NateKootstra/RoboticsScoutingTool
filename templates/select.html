@@ -8,4 +8,9 @@
 {% endblock %}
 
 {% block content %}
+<div class="centercontents">
+    {% for event in get_event_list() %}
+    <button class="event" name="{{ event["key"] }}" id="{{ event["key"] }}">{{ event["name"].split(" District ")[1].replace(" Event", "") }}</button>
+    {% endfor %}
+</div>
 {% endblock %}

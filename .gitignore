@@ -1,4 +1,5 @@
 ssl/
 data/
+tbacache/
 tbakey.txt
 __pycache__/

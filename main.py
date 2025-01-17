@@ -31,7 +31,7 @@ app.jinja_env.globals.update(get_account_list=get_account_list)
 # Returns a list of events.
 def get_event_list():
     team = request.cookies["team"]
-    if authenticate(team, request.cookies["username"], request.cookies["password"]) and getAdmin(team, request.cookies["username"]):
+    if authenticate(team, request.cookies["username"], request.cookies["password"]):
         return getEvents(team)
     return []
 app.jinja_env.globals.update(get_event_list=get_event_list)
@@ -381,3 +381,5 @@ def get_teams_in_event(event_key):
 # Start the application.
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5001, threaded=True)
+    
+print("Hi")
