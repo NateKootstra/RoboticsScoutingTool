@@ -61,9 +61,6 @@ div.centeraccount {
     width: 100%;
 
     align-items: center;
-
-    margin-top: 0.5vw;
-    margin-bottom: 1vw;
 }
 
 div.adminviewright {
@@ -75,7 +72,7 @@ div.adminviewright * {
 }
 
 div.addaccount {
-    margin-top: 1.1vw;
+    padding-top: 0.4vw;
 }
 
 div.addaccount input {
@@ -113,10 +110,45 @@ div.addaccount button {
 
 h3.subtitle {
     font-size: 2vw;
+    margin-top: 1.2vw;
+    margin-bottom: 0.6vw;
 }
 
 img.trash {
     height: 2vw;
     margin-left: 0.5vw;
     margin-right: -0.2vw;
+}
+
+select.event {
+    width: 51.6vw;
+    height: 3.2vw;
+
+    margin-top: -0.4vw;
+    padding-left: 0.4vw;
+    padding-right: 0.4vw;
+    padding-top: 0.2vw;
+
+    background-color: #231b1b;
+    border: 0.4vw solid #afbbf2;
+
+    color: #ffffff;
+
+    font-size: 2vw;
+}
+
+img.eventbutton {
+    width: 1.8vw;
+    margin-left: 0.4vw;
+    margin-right: 0.4vw;
+}
+
+div.eventsubtitle {
+    display: flex;
+    align-items: center;
+    justify-items: center;
+    width: fit-content;
+
+    margin-top: 0.9vw;
+    margin-bottom: 0.6vw;
 }

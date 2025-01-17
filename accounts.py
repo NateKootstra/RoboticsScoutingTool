@@ -1,10 +1,9 @@
 # AUTHENTICATION.PY
-# Library used by MAIN.PY to handle user authentication.
+# Library used by MAIN.PY to handle user authentication and account data.
 
 import os
 import json
 import string
-import random
 
 
 # Authenticate a user sign in request.

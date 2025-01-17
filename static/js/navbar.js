@@ -41,7 +41,7 @@ function viewScout() {
     let loggedIn = checkCookie("username");
 
     if (loggedIn)
-        window.location.href = "/rankings";
+        window.location.href = "/scout";
     else
         show()
 }

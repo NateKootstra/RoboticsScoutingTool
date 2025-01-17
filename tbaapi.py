@@ -88,7 +88,8 @@ class Team(object):
         return request(f"team/{self.key}").json()
 
     def getDistrict(self):
-        return request(f"/team/{self.key}/districts").json()
+        districts = request(f"/team/{self.key}/districts").json()
+        return districts[len(districts) - 1]
 
 
 team = Team(772)

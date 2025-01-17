@@ -15,3 +15,16 @@ function addUser() {
 function deleteUser(username) {
     window.location.href = `/deleteuser/${username}`;
 }
+
+
+function addEvent() {
+    window.location.href = `/addevent`;
+}
+
+function removeEvent() {
+    window.location.href = `/removeevent`;
+}
+
+function updateEvents(events) {
+    window.location.href = `/updateevents/${events}`;
+}

@@ -3,12 +3,11 @@
 
 
 from flask import Flask, render_template, send_from_directory, url_for, make_response, redirect, request
-import os.path
-import random
 from datetime import datetime
 
 import tbaapi
 from accounts import authenticate, getName, getAdmin, getAccounts, deleteUser, addUser
+from events import getEvents, addEvent, removeEvent, updateEvents
 
 
 domain = 'http://127.0.0.1:5001'
@@ -29,6 +28,22 @@ def get_account_list():
     return []
 app.jinja_env.globals.update(get_account_list=get_account_list)
 
+# Returns a list of events.
+def get_event_list():
+    team = request.cookies["team"]
+    if authenticate(team, request.cookies["username"], request.cookies["password"]) and getAdmin(team, request.cookies["username"]):
+        return getEvents(team)
+    return []
+app.jinja_env.globals.update(get_event_list=get_event_list)
+
+# Returns all events in the region.
+
+def get_events_in_district():
+    team = request.cookies["team"]
+    if authenticate(team, request.cookies["username"], request.cookies["password"]) and getAdmin(team, request.cookies["username"]):
+        return tbaapi.District(tbaapi.Team(int(team)).getDistrict()["key"]).get_events()
+    return []
+app.jinja_env.globals.update(get_events_in_district=get_events_in_district)
 
 # Public pages:
 
@@ -40,7 +55,10 @@ def index():
 # Team rankings.
 @app.route('/rankings')
 def rankings():
-    return render_template('rankings.html')
+    if "team" in request.cookies.keys():
+        return render_template('rankings.html')
+    else:
+        return redirect(f'{domain}/signin')
 
 # Sign-in page.
 @app.route('/signin')
@@ -50,10 +68,25 @@ def signin():
 # Account dashboard.
 @app.route('/account')
 def account():
-    if authenticate(request.cookies["team"], request.cookies["username"], request.cookies["password"]) and getAdmin(request.cookies["team"], request.cookies["username"]):
-        return render_template('account_admin.html')
+    if "team" in request.cookies.keys():
+        if authenticate(request.cookies["team"], request.cookies["username"], request.cookies["password"]) and getAdmin(request.cookies["team"], request.cookies["username"]):
+            return render_template('account_admin.html')
+        else:
+            return render_template('account.html')
     else:
-        return render_template('account.html')
+        return redirect(f'{domain}/signin')
+    
+    
+# Scout menu..
+@app.route('/scout')
+def scout():
+    if "team" in request.cookies.keys():
+        if authenticate(request.cookies["team"], request.cookies["username"], request.cookies["password"]) and getAdmin(request.cookies["team"], request.cookies["username"]):
+            return render_template('select_admin.html')
+        else:
+            return render_template('select.html')
+    else:
+        return redirect(f'{domain}/signin')
 
 
 # Internally facing:
@@ -102,6 +135,36 @@ def add_user(username, name, password):
     # Add user only if the user is verified as an admin.
     if authenticate(request.cookies["team"], request.cookies["username"], request.cookies["password"]) and getAdmin(request.cookies["team"], request.cookies["username"]):
         addUser(request.cookies["team"], username, name, password)
+    # Return response.
+    return response
+
+# Add event.
+@app.route('/addevent')
+def add_event():
+    response = make_response(redirect(f'{domain}/account'))
+    # Add event only if the user is verified as an admin.
+    if authenticate(request.cookies["team"], request.cookies["username"], request.cookies["password"]) and getAdmin(request.cookies["team"], request.cookies["username"]):
+        addEvent(request.cookies["team"])
+    # Return response.
+    return response
+
+# Remove event.
+@app.route('/removeevent')
+def remove_event():
+    response = make_response(redirect(f'{domain}/account'))
+    # Remove event only if the user is verified as an admin.
+    if authenticate(request.cookies["team"], request.cookies["username"], request.cookies["password"]) and getAdmin(request.cookies["team"], request.cookies["username"]):
+        removeEvent(request.cookies["team"])
+    # Return response.
+    return response
+
+# Remove event.
+@app.route('/updateevents/<events>')
+def update_events(events):
+    response = make_response(redirect(f'{domain}/account'))
+    # Remove event only if the user is verified as an admin.
+    if authenticate(request.cookies["team"], request.cookies["username"], request.cookies["password"]) and getAdmin(request.cookies["team"], request.cookies["username"]):
+        updateEvents(request.cookies["team"], events)
     # Return response.
     return response
 
@@ -176,11 +239,8 @@ def get_matches_in_event(event_key):
 # Return the district a team is competing in.
 @app.route('/endpoint/team_district/<team_number>')
 def get_district_for_team(team_number):
-    districts = tbaapi.Team(int(team_number)).getDistrict()
-    for district in districts:
-            if district['year'] == 2025:
-                return { 'key' : district['key'],
-                         'name' : district['display_name'] }
+    district = tbaapi.Team(int(team_number)).getDistrict()
+    return { 'key' : district['key'], 'name' : district['display_name'] }
 
 # Return the teams in a given district. 
 @app.route('/endpoint/teams/district/<district_key>')
@@ -320,4 +380,4 @@ def get_teams_in_event(event_key):
 
 # Start the application.
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5001)
+    app.run(debug=True, host='0.0.0.0', port=5001, threaded=True)
