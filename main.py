@@ -12,12 +12,12 @@ from events import getEvents, addEvent, removeEvent, updateEvents
 
 domain = 'http://127.0.0.1:5001'
 app = Flask(__name__)
-year = tbaapi.Year(datetime.now().year)
+year = tbaapi.Year(tbaapi.currentYear)
 
 # Returns info regarding the current account.
 def get_account():
     team = request.cookies["team"]
-    return { 'team': team, 'teamname': tbaapi.Team(int(team)).get()['nickname'], 'name': getName(team, request.cookies["username"]), 'district': get_district_for_team(int(team))['name']}
+    return { 'team': team, 'teamname': tbaapi.Team(int(team)).get_cached()['nickname'], 'name': getName(team, request.cookies["username"]), 'district': get_district_for_team(int(team))['name']}
 app.jinja_env.globals.update(get_account=get_account)
 
 # Returns a list of accounts.
@@ -36,12 +36,37 @@ def get_event_list():
     return []
 app.jinja_env.globals.update(get_event_list=get_event_list)
 
+# Returns a list of events with all associated data.
+def get_full_event_list():
+    # Get the team and event list.
+    team = request.cookies["team"]
+    fullEvents = tbaapi.District(tbaapi.Team(int(team)).get_district_cached()["key"]).get_events_cached()
+    # Authenticate the user.
+    if authenticate(team, request.cookies["username"], request.cookies["password"]):
+        realEvents = []
+        events = getEvents(team)
+        for event in events:
+            for fullEvent in fullEvents:
+                if event == fullEvent['key']:
+                    realEvents.append(fullEvent)
+        return realEvents    
+    return []
+app.jinja_env.globals.update(get_full_event_list=get_full_event_list)
+
+# Returns a lit of every match.
+def get_match_list():
+    # Get the event selected by the user.
+    event = request.cookies["event"]
+    if authenticate(request.cookies["team"], request.cookies["username"], request.cookies["password"]):
+        matches = getMatches(event)
+        
+
 # Returns all events in the region.
 
 def get_events_in_district():
     team = request.cookies["team"]
     if authenticate(team, request.cookies["username"], request.cookies["password"]) and getAdmin(team, request.cookies["username"]):
-        return tbaapi.District(tbaapi.Team(int(team)).getDistrict()["key"]).get_events()
+        return tbaapi.District(tbaapi.Team(int(team)).get_district_cached()["key"]).get_events()
     return []
 app.jinja_env.globals.update(get_events_in_district=get_events_in_district)
 
@@ -75,22 +100,25 @@ def account():
             return render_template('account.html')
     else:
         return redirect(f'{domain}/signin')
-    
+
     
 # Scout menu..
 @app.route('/scout')
 def scout():
     if "team" in request.cookies.keys():
         if authenticate(request.cookies["team"], request.cookies["username"], request.cookies["password"]) and getAdmin(request.cookies["team"], request.cookies["username"]):
-            return render_template('select_admin.html')
+            return render_template('scout_admin.html')
         else:
-            return render_template('select.html')
+            if "event" in request.cookies.keys():
+                return render_template('select_match.html')
+            else:
+                return render_template('select_event.html')
     else:
         return redirect(f'{domain}/signin')
 
 
 # Internally facing:
-    
+
 # Sign in the client.
 @app.route('/signin/<team>/<username>/<password>')
 def sign_in(team, username, password):
@@ -168,16 +196,25 @@ def update_events(events):
     # Return response.
     return response
 
+# Select the event you wish to scout.
+@app.route('/selectevent/<event>')
+def select_event(event):
+    response = make_response(redirect(f'{domain}/scout'))
+    # Select event only if the user is verified as a non-admin user.
+    if authenticate(request.cookies["team"], request.cookies["username"], request.cookies["password"]) and not getAdmin(request.cookies["team"], request.cookies["username"]):
+        response.set_cookie('event', event)
+    # Return response.
+    return response
+
 
 # API Endpoints:
-
 
 
 # Return the districts for the current year.
 @app.route('/endpoint/districts')
 def get_districts():
     # Get districts.
-    districts = year.get_districts()
+    districts = year.get_districts_cached()
 
     # Remove unnecessary data.
     for district in districts:
@@ -187,7 +224,7 @@ def get_districts():
 
     # Return all of the district data.
     return districts
-    
+
 
 # Return the events in a given district.
 @app.route('/endpoint/events/district/<district_key>')
@@ -239,7 +276,7 @@ def get_matches_in_event(event_key):
 # Return the district a team is competing in.
 @app.route('/endpoint/team_district/<team_number>')
 def get_district_for_team(team_number):
-    district = tbaapi.Team(int(team_number)).getDistrict()
+    district = tbaapi.Team(int(team_number)).get_district_cached()
     return { 'key' : district['key'], 'name' : district['display_name'] }
 
 # Return the teams in a given district. 
@@ -343,7 +380,7 @@ def get_rankings_in_district():
     for ranking in rankings3:
         if not ranking['team']['number'] in numbers:
             print(ranking)
-    return rankings3
+    return rankings2
 
 
 app.jinja_env.globals.update(get_rankings_in_district=get_rankings_in_district)
@@ -381,5 +418,3 @@ def get_teams_in_event(event_key):
 # Start the application.
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5001, threaded=True)
-    
-print("Hi")

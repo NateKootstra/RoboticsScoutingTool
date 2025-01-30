@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block links %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/select/buttons.css') }}">
+
+<script src="{{ url_for('static', filename='js/scouting.js') }}"></script>
+{% endblock %}
+
+{% block subtitle %}
+<h2>Scout</h2>
+{% endblock %}
+
+{% block content %}
+{% for event in get_full_event_list() %}
+<div class="centercontents">
+</div>
+{% endfor %}
+
+{% endblock %}

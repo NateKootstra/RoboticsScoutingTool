@@ -52,7 +52,9 @@
         {% else %}
         <option value="{{ eventOption["key"] }}">{{ eventOption["name"].split(" District ")[1].replace(" Event", "") }}</option>
         {% endif %}
+    {% endfor %}
         {% endif %}
+    {% endfor %}
         {% endfor %}
     </select>
     {% endfor %}
