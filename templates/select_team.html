@@ -11,11 +11,4 @@
 {% endblock %}
 
 {% block content %}
-
-{% for event in get_full_event_list() %}
-<div class="centercontents">
-    <button class="event" id="{{ event["key"] }}" onclick="{{ 'selectEvent(\"' + event['key'] + '\")' }}">{{ event["name"].split(" District ")[1].replace(" Event", "") }}</button>
-</div>
-{% endfor %}
-
 {% endblock %}

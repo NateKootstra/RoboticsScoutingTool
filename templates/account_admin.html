@@ -46,15 +46,13 @@
     <select class="event" name="event{{ loop.index }}" id="event{{ loop.index }}" onchange="updateEvents([{% for event2 in get_event_list() %} document.getElementById('event{{ loop.index}}').value, {% endfor %}])">
         <option value="none">None</option>
         {% for eventOption in get_events_in_district() %}
-        {% if not "Provincial Championship" in eventOption["name"] %}
-        {% if eventOption["key"] == event %}
-        <option value="{{ eventOption["key"] }}" selected="selected">{{ eventOption["name"].split(" District ")[1].replace(" Event", "") }}</option>
-        {% else %}
-        <option value="{{ eventOption["key"] }}">{{ eventOption["name"].split(" District ")[1].replace(" Event", "") }}</option>
-        {% endif %}
-    {% endfor %}
-        {% endif %}
-    {% endfor %}
+            {% if not "Provincial Championship" in eventOption["name"] %}
+                {% if eventOption["key"] == event %}
+                <option value="{{ eventOption["key"] }}" selected="selected">{{ eventOption["name"].split(" District ")[1].replace(" Event", "") }}</option>
+                {% else %}
+            `   <option value="{{ eventOption["key"] }}">{{ eventOption["name"].split(" District ")[1].replace(" Event", "") }}</option>
+                {% endif %}
+            {% endif %}
         {% endfor %}
     </select>
     {% endfor %}

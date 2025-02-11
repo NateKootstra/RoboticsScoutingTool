@@ -53,7 +53,7 @@ class District(object):
         if not type(key) == str:
             raise(TypeError("District key should be a string."))
         if not type(year) == int:
-            raise(TypeError("Year should be a string."))
+            raise(TypeError("Year should be an integer."))
         self.key = key
         self.year = year
     
@@ -86,7 +86,7 @@ class Event(object):
         if not type(key) == str:
             raise(TypeError("Event key should be a string."))
         if not type(year) == int:
-            raise(TypeError("Year should be a string."))
+            raise(TypeError("Year should be an integer."))
         self.key = key
         self.year = str(year)
 
@@ -105,12 +105,40 @@ class Event(object):
                 eventInfoJSON = json.loads(eventInfo.read())
                 eventInfo.close()
                 if eventInfoJSON['key'] == self.key:
+                    matches1 = []
+                    matches2 = []
+                    matches3 = []
+                    matches4 = []
+                    matches5 = []
+                    matches6 = []
                     for match in os.listdir(f"tbacache/{self.year}/districts/{district}/events/{self.key}/matches"):
                         match = match.split('_')
                         if 'qm' in match[1]:
-                            match = "Qualifier " + match[1].removeprefix('qm')
-                            matches.append(match)
-                    matches.sort()
+                            if len(match[1]) < 4:
+                                matchName = "Qualifier " + match[1].removeprefix('qm')
+                                matches1.append({ "key" : match[1], "name" : matchName })
+                            else:
+                                matchName = "Qualifier " + match[1].removeprefix('qm')
+                                matches2.append({ "key" : match[1], "name" : matchName })
+                        elif "sf" in match[1]:
+                            if len(match[1]) < 6:
+                                matchName = "Playoffs " + match[1].removeprefix("sf").split("m")[0]
+                                matches3.append({ "key" : match[1], "name" : matchName })
+                            else:
+                                matchName = "Playoffs " + match[1].removeprefix("sf").split("m")[0]
+                                matches4.append({ "key" : match[1], "name" : matchName })
+                        elif "f" in match[1]:
+                            matchName = "Finals - Match " + match[1].removeprefix("f").split("m")[1]
+                            matches5.append({ "key" : match[1], "name" : matchName })
+                        else:
+                            matches6.append({ "key" : match[1], "name" : matchName })
+                    matches1 = sorted(matches1, key=lambda d: d["key"])
+                    matches2 = sorted(matches2, key=lambda d: d["key"])
+                    matches3 = sorted(matches3, key=lambda d: d["key"])
+                    matches4 = sorted(matches4, key=lambda d: d["key"])
+                    matches5 = sorted(matches5, key=lambda d: d["key"])
+                    matches6 = sorted(matches6, key=lambda d: d["key"])
+                    matches = matches1 + matches2 + matches3 + matches4 + matches5 + matches6
         return matches
 
     def get_alliances(self):
@@ -121,15 +149,11 @@ class Event(object):
 class Team(object):
     def __init__(self, team_number, year=currentYear):
         if not type(team_number) == int:
-            raise(TypeError("Team number should be an integer."))
+            raise(TypeError("Team number should be an integer.")).sort()
         if not type(year) == int:
             raise(TypeError("Year should be an integer."))
-        self.key = "frc" + str(team_number)
+        self.key = key
         self.year = str(year)
-    
-
-    def get(self):
-        return request(f"team/{self.key}").json()
     
     def get_cached(self):
         team = open(f"tbacache/{self.year}/teams/{self.key}/info.json")
@@ -145,7 +169,4 @@ class Team(object):
         team = open(f"tbacache/{self.year}/teams/{self.key}/info.json")
         teamInfo = json.loads(team.read())
         team.close()
-        print(teamInfo)
         return teamInfo['district']
-    
-print(Event("2024onwat").get_matches_cached())

@@ -11,8 +11,10 @@
 {% endblock %}
 
 {% block content %}
-{% for event in get_full_event_list() %}
+
+{% for match in get_match_list() %}
 <div class="centercontents">
+    <button class="event" id="{{ match["key"] }}" onclick="{{ 'selectMatch(\"' + match["key"] + '\")' }}">{{ match["name"] }}</button>
 </div>
 {% endfor %}
 

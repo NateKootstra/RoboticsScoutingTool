@@ -36,6 +36,14 @@ def get_event_list():
     return []
 app.jinja_env.globals.update(get_event_list=get_event_list)
 
+# Returns a list of events.
+def get_match_list():
+    team = request.cookies["team"]
+    if authenticate(team, request.cookies["username"], request.cookies["password"]):
+        return tbaapi.Event(request.cookies["event"]).get_matches_cached()
+    return []
+app.jinja_env.globals.update(get_match_list=get_match_list)
+
 # Returns a list of events with all associated data.
 def get_full_event_list():
     # Get the team and event list.
@@ -110,7 +118,10 @@ def scout():
             return render_template('scout_admin.html')
         else:
             if "event" in request.cookies.keys():
-                return render_template('select_match.html')
+                if "match" in request.cookies.keys():
+                    return render_template('select_team.html')
+                else:
+                    return render_template('select_match.html')
             else:
                 return render_template('select_event.html')
     else:
@@ -203,6 +214,16 @@ def select_event(event):
     # Select event only if the user is verified as a non-admin user.
     if authenticate(request.cookies["team"], request.cookies["username"], request.cookies["password"]) and not getAdmin(request.cookies["team"], request.cookies["username"]):
         response.set_cookie('event', event)
+    # Return response.
+    return response
+
+# Select the match you wish to scout.
+@app.route('/selectmatch/<match>')
+def select_match(match):
+    response = make_response(redirect(f'{domain}/scout'))
+    # Select event only if the user is verified as a non-admin user.
+    if authenticate(request.cookies["team"], request.cookies["username"], request.cookies["password"]) and not getAdmin(request.cookies["team"], request.cookies["username"]):
+        response.set_cookie('match', match)
     # Return response.
     return response
 
