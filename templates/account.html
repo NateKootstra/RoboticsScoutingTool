@@ -1,37 +1,37 @@
 {% extends 'base.html' %}
 
 {% block links %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/account/buttons.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/account/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/account/buttons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/account/dashboard.css') }}">
 
-<script src="{{ url_for('static', filename='js/authentication.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/authentication.js') }}"></script>
 {% endblock %}
 
 {% block subtitle %}
-<h2>Account Dashboard</h2>
+    <h2>Account Dashboard</h2>
 {% endblock %}
 
 {% block content %}
-<div class="centeraccount">
-    {% with account = get_account() %}
-    <div class="accountinfo">
-        <h3>Team:</h3>
-        <h3>{{ account['team'] }}</h3>
+    <div class="centeraccount">
+        {% with account = get_account() %}
+            <div class="accountinfo">
+                <h3>Team:</h3>
+                <h3>{{ account['team'] }}</h3>
+            </div>
+            <div class="accountinfo">
+                <h3>Team Name:</h3>
+                <h3>{{ account['teamname'] }}</h3>
+            </div>
+            <div class="accountinfo">
+                <h3>District:</h3>
+                <h3>{{ account['district'] }}</h3>
+            </div>
+            <div class="accountinfo">
+                <h3>User:</h3>
+                <h3>{{ account['name'] }}</h3>
+            </div>
+        {% endwith %}
     </div>
-    <div class="accountinfo">
-        <h3>Team Name:</h3>
-        <h3>{{ account['teamname'] }}</h3>
+        <div class="centercontents"><button onclick="signOut()" style="margin-top: 2vw;">Sign Out</button>
     </div>
-    <div class="accountinfo">
-        <h3>District:</h3>
-        <h3>{{ account['district'] }}</h3>
-    </div>
-    <div class="accountinfo">
-        <h3>User:</h3>
-        <h3>{{ account['name'] }}</h3>
-    </div>
-</div>
-{% endwith %}
-<div class="centercontents"><button onclick="signOut()" style="margin-top: 2vw;">Sign Out</button>
-</div>
 {% endblock %}

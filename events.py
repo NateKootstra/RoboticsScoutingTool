@@ -37,7 +37,6 @@ def removeEvent(team):
 def updateEvents(team, events):
     info = open(f"data/{team}/info.json", 'r')
     newInfo = json.loads(info.read())
-    print(events.split(','))
     newInfo["events"] = events.split(',')
     info.close()
     info = open(f"data/{team}/info.json", 'w')

@@ -152,7 +152,7 @@ class Team(object):
             raise(TypeError("Team number should be an integer.")).sort()
         if not type(year) == int:
             raise(TypeError("Year should be an integer."))
-        self.key = key
+        self.key = "frc" + str(team_number)
         self.year = str(year)
     
     def get_cached(self):

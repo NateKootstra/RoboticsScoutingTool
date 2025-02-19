@@ -1,85 +1,85 @@
 {% extends 'base.html' %}
 
 {% block links %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/account/buttons.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/account/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/account/buttons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/account/dashboard.css') }}">
 
-<script src="{{ url_for('static', filename='js/authentication.js') }}"></script>
-<script src="{{ url_for('static', filename='js/usermanager.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/authentication.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/usermanager.js') }}"></script>
 {% endblock %}
 
 {% block subtitle %}
-<h2>Admin Dashboard</h2>
+    <h2>Admin Dashboard</h2>
 {% endblock %}
 
 {% block content %}
-<div class="centeraccount">
-    {% with account = get_account() %}
-    <div class="accountinfo">
-        <h3>Team:</h3>
-        <h3>{{ account['team'] }}</h3>
+    <div class="centeraccount">
+        {% with account = get_account() %}
+        <div class="accountinfo">
+            <h3>Team:</h3>
+            <h3>{{ account['team'] }}</h3>
+        </div>
+        <div class="accountinfo">
+            <h3>Team Name:</h3>
+            <h3>{{ account['teamname'] }}</h3>
+        </div>
+        <div class="accountinfo">
+            <h3>District:</h3>
+            <h3>{{ account['district'] }}</h3>
+        </div>
+        <div class="accountinfo">
+            <h3>User:</h3>
+            <h3>{{ account['name'] }}</h3>
+        </div>
+        {% endwith %}
     </div>
-    <div class="accountinfo">
-        <h3>Team Name:</h3>
-        <h3>{{ account['teamname'] }}</h3>
-    </div>
-    <div class="accountinfo">
-        <h3>District:</h3>
-        <h3>{{ account['district'] }}</h3>
-    </div>
-    <div class="accountinfo">
-        <h3>User:</h3>
-        <h3>{{ account['name'] }}</h3>
-    </div>
-    {% endwith %}
-</div>
 
-<div class="centeraccount">
-    <div class="eventsubtitle">
-        <img class="eventbutton" onclick="addEvent()" src="{{ url_for('static', filename='images/icons/add.png') }}">
-        <h3 class="subtitle" style="display: inline-block; width: fit-content; margin: 0; margin-top: 0.3vw;">Events</h3>
-        <img class="eventbutton" onclick="removeEvent()" src="{{ url_for('static', filename='images/icons/remove.png') }}">
-    </div>
-</div>
-<div class="centercontents">
-    {% for event in get_event_list() %}
-    <select class="event" name="event{{ loop.index }}" id="event{{ loop.index }}" onchange="updateEvents([{% for event2 in get_event_list() %} document.getElementById('event{{ loop.index}}').value, {% endfor %}])">
-        <option value="none">None</option>
-        {% for eventOption in get_events_in_district() %}
-            {% if not "Provincial Championship" in eventOption["name"] %}
-                {% if eventOption["key"] == event %}
-                <option value="{{ eventOption["key"] }}" selected="selected">{{ eventOption["name"].split(" District ")[1].replace(" Event", "") }}</option>
-                {% else %}
-            `   <option value="{{ eventOption["key"] }}">{{ eventOption["name"].split(" District ")[1].replace(" Event", "") }}</option>
-                {% endif %}
-            {% endif %}
-        {% endfor %}
-    </select>
-    {% endfor %}
-</div>
-
-<div class="centercontents">
-    <h3 class="subtitle">Users</h3>
-</div>
-<div class="centeraccount">
-    {% for account in get_account_list() %}
-    <div class="adminview">
-        <h3>{{ account['name'] }}</h3>
-        <div class="adminviewright">
-            <h3>{{ account['password'] }}</h3>
-            <img onclick="deleteUser('{{ account['username'] }}')"
-                src="{{ url_for('static', filename='images/icons/trash.png') }}" class="trash">
+    <div class="centeraccount">
+        <div class="eventsubtitle">
+            <img class="eventbutton" onclick="addEvent()" src="{{ url_for('static', filename='images/icons/add.png') }}">
+            <h3 class="subtitle" style="display: inline-block; width: fit-content; margin: 0; margin-top: 0.3vw;">Events</h3>
+            <img class="eventbutton" onclick="removeEvent()" src="{{ url_for('static', filename='images/icons/remove.png') }}">
         </div>
     </div>
-    {% endfor %}
-    <div class="addaccount centercontents">
-        <input id="username" type="text" placeholder="Enter Username" maxlength="10"></input>
-        <input id="name" type="text" placeholder="Enter Name" maxlength="10"></input>
-        <input id="password" type="text" placeholder="Enter Password" maxlength="10"></input>
-        <button onclick="addUser()">Add User</button>
+    <div class="centercontents">
+        {% for event in get_event_list() %}
+        <select class="event" name="event{{ loop.index }}" id="event{{ loop.index }}" onchange="updateEvents([{% for event2 in get_event_list() %} document.getElementById('event{{ loop.index}}').value, {% endfor %}])">
+            <option value="none">None</option>
+            {% for eventOption in get_events_in_district() %}
+                {% if not "Provincial Championship" in eventOption["name"] %}
+                    {% if eventOption["key"] == event %}
+                    <option value="{{ eventOption["key"] }}" selected="selected">{{ eventOption["name"].split(" District ")[1].replace(" Event", "") }}</option>
+                    {% else %}
+                `   <option value="{{ eventOption["key"] }}">{{ eventOption["name"].split(" District ")[1].replace(" Event", "") }}</option>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        </select>
+        {% endfor %}
     </div>
-</div>
 
-<div class="centercontents"><button onclick="signOut()">Sign Out</button>
-</div>
+    <div class="centercontents">
+        <h3 class="subtitle">Users</h3>
+    </div>
+    <div class="centeraccount">
+        {% for account in get_account_list() %}
+        <div class="adminview">
+            <h3>{{ account['name'] }}</h3>
+            <div class="adminviewright">
+                <h3>{{ account['password'] }}</h3>
+                <img onclick="deleteUser('{{ account['username'] }}')"
+                    src="{{ url_for('static', filename='images/icons/trash.png') }}" class="trash">
+            </div>
+        </div>
+        {% endfor %}
+        <div class="addaccount centercontents">
+            <input id="username" type="text" placeholder="Enter Username" maxlength="10"></input>
+            <input id="name" type="text" placeholder="Enter Name" maxlength="10"></input>
+            <input id="password" type="text" placeholder="Enter Password" maxlength="10"></input>
+            <button onclick="addUser()">Add User</button>
+        </div>
+    </div>
+
+    <div class="centercontents"><button onclick="signOut()">Sign Out</button>
+    </div>
 {% endblock %}

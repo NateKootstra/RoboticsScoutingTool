@@ -44,6 +44,16 @@ def get_match_list():
     return []
 app.jinja_env.globals.update(get_match_list=get_match_list)
 
+# Returns the alliances of a given team.
+def get_alliances_in_match():
+    team = request.cookies["team"]
+    if authenticate(team, request.cookies["username"], request.cookies["password"]):
+        for match in tbaapi.Event(request.cookies["event"]).get_matches():
+            if match["key"].split("_")[1] == request.cookies["match"]:
+                return match["alliances"]
+    return []
+app.jinja_env.globals.update(get_alliances_in_match=get_alliances_in_match)
+
 # Returns a list of events with all associated data.
 def get_full_event_list():
     # Get the team and event list.
@@ -61,22 +71,14 @@ def get_full_event_list():
     return []
 app.jinja_env.globals.update(get_full_event_list=get_full_event_list)
 
-# Returns a lit of every match.
-def get_match_list():
-    # Get the event selected by the user.
-    event = request.cookies["event"]
-    if authenticate(request.cookies["team"], request.cookies["username"], request.cookies["password"]):
-        matches = getMatches(event)
-        
-
 # Returns all events in the region.
-
 def get_events_in_district():
     team = request.cookies["team"]
     if authenticate(team, request.cookies["username"], request.cookies["password"]) and getAdmin(team, request.cookies["username"]):
         return tbaapi.District(tbaapi.Team(int(team)).get_district_cached()["key"]).get_events()
     return []
 app.jinja_env.globals.update(get_events_in_district=get_events_in_district)
+
 
 # Public pages:
 
@@ -89,9 +91,9 @@ def index():
 @app.route('/rankings')
 def rankings():
     if "team" in request.cookies.keys():
-        return render_template('rankings.html')
-    else:
-        return redirect(f'{domain}/signin')
+        if authenticate(request.cookies["team"], request.cookies["username"], request.cookies["password"]):
+            return render_template('rankings.html')
+    return redirect(f'{domain}/signin')
 
 # Sign-in page.
 @app.route('/signin')
@@ -102,30 +104,29 @@ def signin():
 @app.route('/account')
 def account():
     if "team" in request.cookies.keys():
-        if authenticate(request.cookies["team"], request.cookies["username"], request.cookies["password"]) and getAdmin(request.cookies["team"], request.cookies["username"]):
-            return render_template('account_admin.html')
-        else:
+        if authenticate(request.cookies["team"], request.cookies["username"], request.cookies["password"]):
+            if getAdmin(request.cookies["team"], request.cookies["username"]):
+                return render_template('account_admin.html')
             return render_template('account.html')
-    else:
-        return redirect(f'{domain}/signin')
+    return redirect(f'{domain}/signin')
 
     
 # Scout menu..
 @app.route('/scout')
 def scout():
     if "team" in request.cookies.keys():
-        if authenticate(request.cookies["team"], request.cookies["username"], request.cookies["password"]) and getAdmin(request.cookies["team"], request.cookies["username"]):
-            return render_template('scout_admin.html')
-        else:
-            if "event" in request.cookies.keys():
-                if "match" in request.cookies.keys():
-                    return render_template('select_team.html')
-                else:
-                    return render_template('select_match.html')
+        if authenticate(request.cookies["team"], request.cookies["username"], request.cookies["password"]):
+            if getAdmin(request.cookies["team"], request.cookies["username"]):
+                return render_template('scout_admin.html')
             else:
-                return render_template('select_event.html')
-    else:
-        return redirect(f'{domain}/signin')
+                if "event" in request.cookies.keys():
+                    if "match" in request.cookies.keys():
+                        return render_template('select_team.html')
+                    else:
+                        return render_template('select_match.html')
+                else:
+                    return render_template('select_event.html')
+    return redirect(f'{domain}/signin')
 
 
 # Internally facing:
@@ -224,6 +225,16 @@ def select_match(match):
     # Select event only if the user is verified as a non-admin user.
     if authenticate(request.cookies["team"], request.cookies["username"], request.cookies["password"]) and not getAdmin(request.cookies["team"], request.cookies["username"]):
         response.set_cookie('match', match)
+    # Return response.
+    return response
+
+# Select the team you wish to scout.
+@app.route('/selectteam/<team>')
+def select_team(team):
+    response = make_response(redirect(f'{domain}/scout'))
+    # Select event only if the user is verified as a non-admin user.
+    if authenticate(request.cookies["team"], request.cookies["username"], request.cookies["password"]) and not getAdmin(request.cookies["team"], request.cookies["username"]):
+        response.set_cookie('teamscout', team)
     # Return response.
     return response
 

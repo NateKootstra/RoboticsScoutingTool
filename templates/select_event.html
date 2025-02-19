@@ -1,21 +1,21 @@
 {% extends 'base.html' %}
 
 {% block links %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/select/buttons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/select/buttons.css') }}">
 
-<script src="{{ url_for('static', filename='js/scouting.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/scouting.js') }}"></script>
 {% endblock %}
 
 {% block subtitle %}
-<h2>Scout</h2>
+    <h2>Scout</h2>
 {% endblock %}
 
 {% block content %}
 
-{% for event in get_full_event_list() %}
-<div class="centercontents">
-    <button class="event" id="{{ event["key"] }}" onclick="{{ 'selectEvent(\"' + event['key'] + '\")' }}">{{ event["name"].split(" District ")[1].replace(" Event", "") }}</button>
-</div>
-{% endfor %}
+    {% for event in get_full_event_list() %}
+        <div class="centercontents">
+            <button class="event" id="{{ event["key"] }}" onclick="{{ 'selectEvent(\"' + event['key'] + '\")' }}">{{ event["name"].split(" District ")[1].replace(" Event", "") }}</button>
+        </div>
+    {% endfor %}
 
 {% endblock %}
