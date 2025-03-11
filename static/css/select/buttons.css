@@ -15,4 +15,6 @@ button {
 
 button.team {
     width: 12vw;
+    margin-left: 0.25vw;
+    margin-right: 0.25vw;
 }

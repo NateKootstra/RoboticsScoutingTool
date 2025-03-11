@@ -10,7 +10,7 @@ from accounts import authenticate, getName, getAdmin, getAccounts, deleteUser, a
 from events import getEvents, addEvent, removeEvent, updateEvents
 
 
-domain = 'http://127.0.0.1:5001'
+domain = 'http://10.128.175.3:5001'
 app = Flask(__name__)
 year = tbaapi.Year(tbaapi.currentYear)
 
@@ -48,6 +48,8 @@ app.jinja_env.globals.update(get_match_list=get_match_list)
 def get_alliances_in_match():
     team = request.cookies["team"]
     if authenticate(team, request.cookies["username"], request.cookies["password"]):
+        if "practice" in request.cookies["match"]:
+            return { "red" : { "team_keys" : ["frc1", "frc2", "frc3"] }, "blue" : { "team_keys" : ["frc4", "frc5", "frc6"] }}
         for match in tbaapi.Event(request.cookies["event"]).get_matches():
             if match["key"].split("_")[1] == request.cookies["match"]:
                 return match["alliances"]
@@ -64,9 +66,12 @@ def get_full_event_list():
         realEvents = []
         events = getEvents(team)
         for event in events:
-            for fullEvent in fullEvents:
-                if event == fullEvent['key']:
-                    realEvents.append(fullEvent)
+            if event == "practice":
+                realEvents.append({"key": "practice"})
+            else:
+                for fullEvent in fullEvents:
+                    if event == fullEvent['key']:
+                        realEvents.append(fullEvent)
         return realEvents    
     return []
 app.jinja_env.globals.update(get_full_event_list=get_full_event_list)
@@ -121,6 +126,10 @@ def scout():
             else:
                 if "event" in request.cookies.keys():
                     if "match" in request.cookies.keys():
+                        if "teamscout" in request.cookies.keys():
+                            if "started" in request.cookies.keys():
+                                return render_template('scout_active.html')
+                            return render_template('scout_waiting.html')
                         return render_template('select_team.html')
                     else:
                         return render_template('select_match.html')
@@ -235,6 +244,26 @@ def select_team(team):
     # Select event only if the user is verified as a non-admin user.
     if authenticate(request.cookies["team"], request.cookies["username"], request.cookies["password"]) and not getAdmin(request.cookies["team"], request.cookies["username"]):
         response.set_cookie('teamscout', team)
+    # Return response.
+    return response
+
+# Go back in scouting menu.
+@app.route('/unscout/<level>')
+def unscout(level):
+    response = make_response(redirect(f'{domain}/scout'))
+    # Authenticate.
+    if authenticate(request.cookies["team"], request.cookies["username"], request.cookies["password"]) and not getAdmin(request.cookies["team"], request.cookies["username"]):
+        response.delete_cookie(level)
+    # Return response.
+    return response
+
+# Start scouting.
+@app.route('/startscout')
+def startscout():
+    response = make_response(redirect(f'{domain}/scout'))
+    # Authenticate.
+    if authenticate(request.cookies["team"], request.cookies["username"], request.cookies["password"]) and not getAdmin(request.cookies["team"], request.cookies["username"]):
+        response.set_cookie('started', 'true')
     # Return response.
     return response
 

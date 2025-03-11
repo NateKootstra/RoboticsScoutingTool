@@ -13,9 +13,15 @@
 {% block content %}
 
     {% for event in get_full_event_list() %}
-        <div class="centercontents">
-            <button class="event" id="{{ event["key"] }}" onclick="{{ 'selectEvent(\"' + event['key'] + '\")' }}">{{ event["name"].split(" District ")[1].replace(" Event", "") }}</button>
-        </div>
+        {% if event["key"] == "practice" %}
+            <div class="centercontents">
+                <button class="event" id="practice" onclick="selectEvent('practice')">Scouting Practice</button>
+            </div>
+        {% else %}
+            <div class="centercontents">
+                <button class="event" id="{{ event["key"] }}" onclick="{{ 'selectEvent(\"' + event['key'] + '\")' }}">{{ event["name"].split(" District ")[1].replace(" Event", "") }}</button>
+            </div>
+        {% endif %}
     {% endfor %}
 
 {% endblock %}

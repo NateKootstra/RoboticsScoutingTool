@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block links %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/select/buttons.css') }}">
+
+<script src="{{ url_for('static', filename='js/scouting.js') }}"></script>
+{% endblock %}
+
+{% block subtitle %}
+<h2>Scouting Team</h2>
+{% endblock %}
+
+{% block content %}
+    <div class="centercontents">
+        <button class="team" onclick="unScout('teamscout')">Back</button>
+    </div>
+    <div class="centercontents">
+        <button class="team" onclick="start()" style="border: 0.5vw solid rgb(27, 168, 50);">Start</button>
+    </div>
+{% endblock %}

@@ -5,7 +5,6 @@ from datetime import datetime
 import tbaapi
 
 year = tbaapi.currentYear
-year = 2024
 yearString = str(year)
 year = tbaapi.Year(year)
 

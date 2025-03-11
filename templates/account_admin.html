@@ -45,6 +45,11 @@
         {% for event in get_event_list() %}
         <select class="event" name="event{{ loop.index }}" id="event{{ loop.index }}" onchange="updateEvents([{% for event2 in get_event_list() %} document.getElementById('event{{ loop.index}}').value, {% endfor %}])">
             <option value="none">None</option>
+            {% if event == "practice" %}
+                <option value="practice" selected="selected">Practice (NOT A REAL EVENT)</option>
+            {% else %}
+                <option value="practice">Practice (NOT A REAL EVENT)</option>
+            {% endif %}
             {% for eventOption in get_events_in_district() %}
                 {% if not "Provincial Championship" in eventOption["name"] %}
                     {% if eventOption["key"] == event %}

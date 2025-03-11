@@ -139,6 +139,20 @@ class Event(object):
                     matches5 = sorted(matches5, key=lambda d: d["key"])
                     matches6 = sorted(matches6, key=lambda d: d["key"])
                     matches = matches1 + matches2 + matches3 + matches4 + matches5 + matches6
+        matchesFull = self.get_matches()
+        if self.key == "practice":
+            matches.append({ "key" : "example1", "name" : "Blue Victory Example", "winner" : "blue", "started" : True })
+            matches.append({ "key" : "example2", "name" : "Red Victory Example", "winner" : "red", "started" : True })
+            matches.append({ "key" : "example3", "name" : "Started Match Example", "winner" : "none", "started" : True })
+            matches.append({ "key" : "divider1", "name" : "---------------------", "winner" : "divider", "started" : True })
+            matches.append({ "key" : "practice1", "name" : "Practice Match 1", "winner" : "none", "started" : False })
+        else:
+            for match in matches:
+                match["winner"] = "none"
+                match["started"] = False
+                for match2 in matchesFull:
+                    if match["key"] == match2["key"].split("_")[1]:
+                        match["winner"] = match2["winning_alliance"]
         return matches
 
     def get_alliances(self):

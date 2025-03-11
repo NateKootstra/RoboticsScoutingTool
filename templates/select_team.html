@@ -11,16 +11,18 @@
 {% endblock %}
 
 {% block content %}
-
+    <div class="centercontents">
+        <button class="team" onclick="unScout('match')">Back</button>
+    </div>
     {% with alliances = get_alliances_in_match() %}
         <div class="redalliance centercontents">
             {% for team in alliances["red"]["team_keys"] %}
-                <button class="team" id="{{ team }}" onclick="{{ 'selectTeam(\"' + team + '\")' }}" style="border: 0.5vw solid rgb(202, 7, 7);">{{ team.split("frc")[1] }}</button>
+                <button class="team" id="{{ team }}" onclick="{{ 'selectTeam(\"' + team + '\")' }}" style="border: 0.5vw solid rgb(202, 7, 7);">{{ team.split("frc")[1] }}
             {% endfor %}
         </div>
         <div class="bluealliance centercontents">
             {% for team in alliances["blue"]["team_keys"] %}
-                <button class="team" id="{{ team }}" onclick="{{ 'selectTeam(\"' + team + '\")' }}" style="border: 0.5vw solid rgb(51, 5, 158);">{{ team.split("frc")[1] }}</button>
+                <button class="team" id="{{ team }}" onclick="{{ 'selectTeam(\"' + team + '\")' }}" style="border: 0.5vw solid rgb(51, 5, 158);">{{ team.split("frc")[1] }}
             {% endfor %}
         </div>
     {% endwith %}

@@ -1,0 +1,142 @@
+<!doctype html>
+<title>SpeedScout</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0 user-scalable=no">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/base/core.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/base/input.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/scouting/buttons.css') }}">
+
+
+
+<body onload="runTimer(); runStampTimer()">
+
+<script src="{{ url_for('static', filename='js/activescouting.js') }}"></script>
+
+
+<nav>
+    <div class="timer">
+        <img src="{{ url_for('static', filename='images/icons/timer.png') }}">
+        <p id="timer">2:33</p>
+    </div>
+</nav>
+
+
+<div class="content">
+    <div class="splitter">
+        <div class="divider" id="divider1">
+            <button onclick="scout('TL2', 'Coral|Pickup|t')" style="background-color:rgb(120, 10, 10)">Coral</button>
+        </div>
+        <div class="divider" id="divider2">
+            <button onclick="scout('TR2', 'Algae|Pickup|t')" style="background-color:rgb(50, 110, 10)">Algae</button>
+        </div>
+    </div>
+    <div class="splitter">
+        <div class="divider" id="divider3">
+            <button onclick="scout('BL2', 'Defense|Start|t')" style="background-color:rgb(10, 90, 130)">Defense</button>
+        </div>
+        <div class="divider" id="divider4">
+            <button onclick="scout('BR2', 'Other|Start|t')" style="background-color:rgb(190, 110, 20)">Other</button>
+        </div>
+    </div>
+</div>
+
+
+
+<template id="TL1">
+    <button onclick="scout('TL2', 'Coral|Pickup|t')" style="background-color:rgb(120, 10, 10)">Coral</button>
+</template>
+<template id="TL2">
+    <div class="subsplitter">
+        <button onclick="scout('TL3', 'Coral|Place|t')" style="background-color:rgb(140, 10, 10)">Place</button>
+        <button onclick="scout('TL1', 'Coral|Eject|te')" style="background-color:rgb(120, 10, 10)">Eject</button>
+    </div>
+    <div class="subsplitter">
+        <button onclick="scout('TL1', 'Coral|Drop|te')" style="background-color:rgb(95, 10, 10)">Drop</button>
+    </div>
+</template>
+<template id="TL3">
+    <div class="subsplitter">
+        <button onclick="scout('TL4', 'Coral|L1|u')" style="background-color:rgb(140, 10, 10)">L1</button>
+        <button onclick="scout('TL4', 'Coral|L2|u')" style="background-color:rgb(120, 10, 10)">L2</button>
+    </div>
+    <div class="subsplitter">
+        <button onclick="scout('TL4', 'Coral|L3|u')" style="background-color:rgb(95, 10, 10)">L3</button>
+        <button onclick="scout('TL4', 'Coral|L4|u')" style="background-color:rgb(80, 10, 10)">L4</button>
+    </div>
+</template>
+<template id="TL4">
+    <div class="subsplitterfull">
+        <button onclick="scout('TL1', 'Coral|Hit|ue')" style="background-color:rgb(40, 80, 10)">Hit</button>
+        <button onclick="scout('TL1', 'Coral|Miss|ue')" style="background-color:rgb(90, 10, 10)">Miss</button>
+    </div>
+</template>
+
+
+<template id="TR1">
+    <button onclick="scout('TR2', 'Algae|Pickup|t')" style="background-color:rgb(50, 110, 10)">Algae</button>
+</template>
+<template id="TR2">
+    <div class="subsplitterfull">
+        <button onclick="scout('TR3', 'Algae|Reef|u')" style="background-color:rgb(50, 130, 10)">Reef</button>
+        <button onclick="scout('TR3', 'Algae|Ground|u')" style="background-color:rgb(50, 110, 10)">Ground</button>
+    </div>
+</template>
+<template id="TR3">
+    <div class="subsplitter">
+        <button onclick="scout('TR4', 'Algae|Score|t')" style="background-color:rgb(50, 130, 10)">Score</button>
+        <button onclick="scout('TR4', 'Algae|Process|t')" style="background-color:rgb(50, 110, 10)">Process</button>
+    </div>
+    <div class="subsplitter">
+        <button onclick="scout('TR1', 'Algae|Eject|te')" style="background-color:rgb(50, 95, 10)">Eject</button>
+        <button onclick="scout('TR1', 'Algae|Drop|te')" style="background-color:rgb(50, 80, 10)">Drop</button>
+    </div>
+</template>
+<template id="TR4">
+    <div class="subsplitterfull">
+        <button onclick="scout('TR1', 'Algae|Hit|ue')" style="background-color:rgb(40, 80, 10)">Hit</button>
+        <button onclick="scout('TR1', 'Algae|Miss|ue')" style="background-color:rgb(90, 10, 10)">Miss</button>
+    </div>
+</template>
+
+
+<template id="BL1">
+    <button onclick="scout('BL2', 'Defense|Start|t')" style="background-color:rgb(10, 90, 130)">Defense</button>
+</template>
+<template id="BL2">
+    <div class="subsplitterfull">
+        <button onclick="scout('BL3', 'Defense|Block|t')" style="background-color:rgb(10, 100, 140)">Block</button>
+        <button onclick="scout('BL1', 'Defense|Stop|te')" style="background-color:rgb(10, 90, 130)">End</button>
+    </div>
+</template>
+<template id="BL3">
+    <div class="subsplitterfull">
+        <button onclick="scout('BL2', 'Defense|Win|ue')" style="background-color:rgb(10, 100, 140)">Won</button>
+        <button onclick="scout('BL2', 'Defense|Lose|ue')" style="background-color:rgb(10, 90, 130)">Lost</button>
+    </div>
+</template>
+
+
+<template id="BR1">
+    <button onclick="scout('BR2', 'Other')" style="background-color:rgb(190, 110, 20)">Other</button>
+</template>
+<template id="BR2">
+    <div class="subsplitterfull">
+        <button onclick="scout('BR3', 'Stopped')" style="background-color:rgb(200, 120, 20)">Stopped</button>
+        <button onclick="scout('BR3-1', 'Penalty')" style="background-color:rgb(190, 110, 20)">Penalty</button>
+    </div>
+</template>
+<template id="BR3">
+    <button onclick="scout('BR1', 'Back On')" style="background-color:rgb(190, 110, 20)">Back On</button>
+</template>
+<template id="BR3-1">
+    <div class="subsplitter">
+        <button onclick="scout('BR1', 'Possession')" style="background-color:rgb(200, 120, 20)">Possession</button>
+        <button onclick="scout('BR1', 'Dual Defense')" style="background-color:rgb(190, 110, 20)">Dual Def</button>
+    </div>
+    <div class="subsplitter">
+        <button onclick="scout('BR1', 'Reef Collision')" style="background-color:rgb(180, 100, 20)">Reef Col</button>
+        <button onclick="scout('BR1', 'Opposition Cage')" style="background-color:rgb(170, 90, 20)">Opp Cage</button>
+    </div>
+</template>
+
+</body>
