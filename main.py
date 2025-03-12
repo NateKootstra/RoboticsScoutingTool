@@ -10,7 +10,7 @@ from accounts import authenticate, getName, getAdmin, getAccounts, deleteUser, a
 from events import getEvents, addEvent, removeEvent, updateEvents
 
 
-domain = 'http://10.128.175.3:5001'
+domain = 'http://127.0.0.1:5001'
 app = Flask(__name__)
 year = tbaapi.Year(tbaapi.currentYear)
 
@@ -264,6 +264,19 @@ def startscout():
     # Authenticate.
     if authenticate(request.cookies["team"], request.cookies["username"], request.cookies["password"]) and not getAdmin(request.cookies["team"], request.cookies["username"]):
         response.set_cookie('started', 'true')
+    # Return response.
+    return response
+
+# Submit data.
+@app.route('/submit/<data>')
+def submitdata(data):
+    response = make_response(redirect(f'{domain}/scout'))
+    # Authenticate.
+    if authenticate(request.cookies["team"], request.cookies["username"], request.cookies["password"]) and not getAdmin(request.cookies["team"], request.cookies["username"]):
+        response.delete_cookie('match')
+        response.delete_cookie('teamscout')
+        response.delete_cookie('started')
+    print(data)
     # Return response.
     return response
 
