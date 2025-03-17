@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block links %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/select/buttons.css') }}">
+
+<script src="{{ url_for('static', filename='js/pitscouting.js') }}"></script>
+{% endblock %}
+
+{% block subtitle %}
+<h2>Pit Scout</h2>
+{% endblock %}
+
+{% block content %}
+    {% for event in get_full_event_list() %}
+        {% if not event["key"] == "practice" %}
+            <div class="centercontents">
+                <button class="event" id="{{ event["key"] }}" onclick="{{ 'selectEvent(\"' + event['key'] + '\")' }}">{{ event["name"].split(" District ")[1].replace(" Event", "") }}</button>
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endblock %}

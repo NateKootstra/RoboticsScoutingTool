@@ -1,5 +1,7 @@
 import json
 import os
+import sys
+import time
 from datetime import datetime
 
 import tbaapi
@@ -10,18 +12,19 @@ year = tbaapi.Year(year)
 
 def cache():
     for district in year.get_districts():
-        cacheDistrict(district)
-        print(district["display_name"])
-        for event in tbaapi.District(district['key']).get_events():
-            if not "tempclone" in event["key"]:
-                cacheEvent(district, event)
-                print("  -> " + event["name"])
-                for team in tbaapi.Event(event['key']).get_teams():
-                    cacheTeamInEvent(district, event, team)
-                for match in tbaapi.Event(event['key']).get_matches():
-                    cacheMatch(district, event, match)
-        for team in tbaapi.District(district['key']).get_teams():
-            cacheTeamInDistrict(district, team)
+        if district["key"] in sys.argv[1]:
+            cacheDistrict(district)
+            print(district["display_name"])
+            for event in tbaapi.District(district['key']).get_events():
+                if not "tempclone" in event["key"]:
+                    cacheEvent(district, event)
+                    print("  -> " + event["name"])
+                    for team in tbaapi.Event(event['key']).get_teams():
+                        cacheTeamInEvent(district, event, team)
+                    for match in tbaapi.Event(event['key']).get_matches():
+                        cacheMatch(district, event, match)
+            for team in tbaapi.District(district['key']).get_teams():
+                cacheTeamInDistrict(district, team)
             
 def cacheDistrict(district):
     key = district['key']
@@ -80,5 +83,7 @@ def cacheMatch(district, event, match):
     json.dump(match, matchFile)
     matchFile.close()
     return
-        
-cache()
+      
+while True:  
+    cache()
+    time.sleep(120)

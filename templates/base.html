@@ -20,6 +20,7 @@
     <div class="icons">
         <img onclick="viewRankings()" src="{{ url_for('static', filename='images/icons/rankings.png') }}">
         <img src="{{ url_for('static', filename='images/icons/divider.png') }}" class="divider">
+        <img onclick="viewPitScout()" src="{{ url_for('static', filename='images/icons/pitscout.png') }}">
         <img onclick="viewScout()" src="{{ url_for('static', filename='images/icons/scout.png') }}">
         <img onclick="viewData()" src="{{ url_for('static', filename='images/icons/data.png') }}">
         <img src="{{ url_for('static', filename='images/icons/divider.png') }}" class="divider">
@@ -33,9 +34,11 @@
     {% block content %}{% endblock %}
 </div>
 
-<footer>
+<!--
+ <footer>
     <h1>Developed by Nate Kootstra</h1>
     <a href="mailto:natekootstra@gmail.com">natekootstra@gmail.com</a>
     <a href="https://natekootstra.dev"><s>https://natekootstra.dev</s></a>
     <a href="https://github.com/natekootstra">https://github.com/natekootstra</a>
-</footer>
+</footer> 
+-->

@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block links %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/select/buttons.css') }}">
+
+<script src="{{ url_for('static', filename='js/pitscouting.js') }}"></script>
+{% endblock %}
+
+{% block subtitle %}
+<h2>Pit Scout</h2>
+{% endblock %}
+
+{% block content %}
+    <div class="centercontents">
+        <button class="team" onclick="unScout('event')">Back</button>
+    </div>
+    {% for team in get_teams_in_event() %}
+        {% if team["scouted"] %}
+            <div class="centercontents">
+                <button class="event" id="{{ team["key"] }}" style="border: 0.5vw solid rgb(27, 168, 50);">{{ team["key"].split("frc")[1] }}</button>
+            </div>
+        {% else %}
+            <div class="centercontents">
+                <button class="event" id="{{ team["key"] }}" onclick="{{ 'selectTeam(\"' + team["key"] + '\")' }}">{{ team["key"].split("frc")[1] }}</button>
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endblock %}

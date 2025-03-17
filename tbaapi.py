@@ -19,7 +19,6 @@ headers = {
 }
 
 currentYear = datetime.now().year
-currentYear = 2024
 
 # General request function.
 def request(endpoint):
@@ -92,7 +91,25 @@ class Event(object):
 
     
     def get_teams(self):
-        return request(f"event/{self.key}/teams").json()
+        teams = request(f"event/{self.key}/teams").json()
+        one = []
+        two = []
+        three = []
+        four = []
+        five = []
+        for team in teams:
+            if len(team["key"]) == 4:
+                one.append(team)
+            elif len(team["key"]) == 5:
+                two.append(team)
+            elif len(team["key"]) == 6:
+                three.append(team)
+            elif len(team["key"]) == 7:
+                four.append(team)
+            elif len(team["key"]) == 8:
+                five.append(team)
+        finalTeams = one + two + three + four + five
+        return finalTeams
 
     def get_matches(self):
         return request(f"event/{self.key}/matches").json()
@@ -146,6 +163,15 @@ class Event(object):
             matches.append({ "key" : "example3", "name" : "Started Match Example", "winner" : "none", "started" : True })
             matches.append({ "key" : "divider1", "name" : "---------------------", "winner" : "divider", "started" : True })
             matches.append({ "key" : "practice1", "name" : "Practice Match 1", "winner" : "none", "started" : False })
+            matches.append({ "key" : "practice2", "name" : "Practice Match 2", "winner" : "none", "started" : False })
+            matches.append({ "key" : "practice3", "name" : "Practice Match 3", "winner" : "none", "started" : False })
+            matches.append({ "key" : "practice4", "name" : "Practice Match 4", "winner" : "none", "started" : False })
+            matches.append({ "key" : "practice5", "name" : "Practice Match 5", "winner" : "none", "started" : False })
+            matches.append({ "key" : "practice6", "name" : "Practice Match 6", "winner" : "none", "started" : False })
+            matches.append({ "key" : "practice7", "name" : "Practice Match 7", "winner" : "none", "started" : False })
+            matches.append({ "key" : "practice8", "name" : "Practice Match 8", "winner" : "none", "started" : False })
+            matches.append({ "key" : "practice9", "name" : "Practice Match 9", "winner" : "none", "started" : False })
+            matches.append({ "key" : "practice10", "name" : "Practice Match 10", "winner" : "none", "started" : False })
         else:
             for match in matches:
                 match["winner"] = "none"

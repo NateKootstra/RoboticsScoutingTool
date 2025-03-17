@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block links %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/select/buttons.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/scouting/pitbuttons.css') }}">
+
+<script src="{{ url_for('static', filename='js/pitscouting.js') }}"></script>
+{% endblock %}
+
+{% block subtitle %}
+<h2>Pit Scout</h2>
+{% endblock %}
+
+{% block content %}
+    <div class="centercontents">
+        <button class="team" onclick="unScout('team')">Back</button>
+    </div>
+    <div class="levels">
+        <div>
+            <h1>L1</h1>
+            <select id="L1">
+                <option value="none">Select</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+        </div>
+        <div>
+            <h1>L2</h1>
+            <select id="L2">
+                <option value="none">Select</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+        </div>
+        <div>
+            <h1>L3</h1>
+            <select id="L3">
+                <option value="none">Select</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+        </div>
+        <div>
+            <h1>L4</h1>
+            <select id="L4">
+                <option value="none">Select</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+        </div>
+    </div>
+    <div class="algae">
+        <div>
+            <h1>Processor</h1>
+            <select id="Processor">
+                <option value="none">Select</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+        </div>
+        <div>
+            <h1>Net</h1>
+            <select id="Net">
+                <option value="none">Select</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+        </div>
+    </div>
+    <div class="climb">
+        <div>
+            <h1>Deep Climb</h1>
+            <select id="Deep">
+                <option value="none">Select</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+        </div>
+        <div>
+            <h1>Shallow Climb</h1>
+            <select id="Shallow">
+                <option value="none">Select</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+        </div>
+    </div>
+    <div class="drivetrain">
+        <div>
+            <h1>Drivetrain</h1>
+            <select id="Drive">
+                <option value="none">Select</option>
+                <option value="swerve">Swerve</option>
+                <option value="mecanum">Mecanum</option>
+                <option value="mecanum">Tank</option>
+            </select>
+        </div>
+    </div>
+    <div class="dnp">
+        <div>
+            <h1>DO NOT PICK</h1>
+            <select id="DNP">
+                <option value="no">No</option>
+                <option value="yes">Yes</option>
+            </select>
+        </div>
+    </div>
+    <div class="centercontents">
+        <button onclick="submitData()" class="submit">SUBMIT</button>
+    </div>
+{% endblock %}

@@ -18,6 +18,10 @@ function viewScout() {
     window.location.href = "/scout";
 }
 
+function viewPitScout() {
+    window.location.href = "/pitscout";
+}
+
 function viewRankings() {
     window.location.href = "/rankings";
 }

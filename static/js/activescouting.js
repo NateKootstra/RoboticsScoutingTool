@@ -1,4 +1,4 @@
-var timer = [2, 30, 3, 10]
+var timer = [0, 10, 3, 0]
 var time = 0
 
 function scout(name, event) {

@@ -1,0 +1,66 @@
+h1 {
+    color: rgb(35, 27, 27);
+    font-size: 3vw;
+}
+
+select {
+    width: 15vw;
+    height: 3vw;
+
+    font-size: 1.8vw;
+
+    border: 0.4vw solid rgb(35, 27, 27);
+    background-color: rgb(246, 239, 238);
+    appearance: none;
+
+    text-align: center;
+}
+
+div.climb div select,
+div.algae div select {
+    width: 33.35vw;
+}
+
+div.dnp div select,
+div.drivetrain div select {
+    width: 70vw;
+}
+
+div.dnp,
+div.drivetrain,
+div.climb,
+div.algae,
+div.levels {
+    display: flex;
+    justify-content: center;
+
+    margin-top: 1vw;
+}
+
+div.dnp div,
+div.drivetrain div,
+div.climb div,
+div.algae div,
+div.levels div {
+    width: fit-content;
+    padding: 0.8vw;
+
+    border: 0.2vw solid rgb(35, 27, 27);
+
+    text-align: center;
+
+    margin-left: 0.7vw;
+    margin-right: 0.7vw;
+}
+
+button.submit {
+    margin-top: 1vw;
+    width: 71.8vw;
+    height: 4vw;
+
+    font-size: 2.5vw;
+
+    background-color: rgb(35, 27, 27);
+    color: rgb(246, 239, 238);
+    border: none;
+}

@@ -17,12 +17,20 @@
     {% with alliances = get_alliances_in_match() %}
         <div class="redalliance centercontents">
             {% for team in alliances["red"]["team_keys"] %}
-                <button class="team" id="{{ team }}" onclick="{{ 'selectTeam(\"' + team + '\")' }}" style="border: 0.5vw solid rgb(202, 7, 7);">{{ team.split("frc")[1] }}
+                {% if team in get_lock() %}
+                    <button class="team" id="{{ team }}" onclick="{{ 'selectTeam(\"' + team + '\")' }}" style="border: 0.5vw solid rgb(27, 168, 50);">{{ team.split("frc")[1] }}
+                {% else %}
+                    <button class="team" id="{{ team }}" onclick="{{ 'selectTeam(\"' + team + '\")' }}" style="border: 0.5vw solid rgb(202, 7, 7);">{{ team.split("frc")[1] }}
+                {% endif %}
             {% endfor %}
         </div>
         <div class="bluealliance centercontents">
             {% for team in alliances["blue"]["team_keys"] %}
-                <button class="team" id="{{ team }}" onclick="{{ 'selectTeam(\"' + team + '\")' }}" style="border: 0.5vw solid rgb(51, 5, 158);">{{ team.split("frc")[1] }}
+                {% if team in get_lock() %}
+                    <button class="team" id="{{ team }}" onclick="{{ 'selectTeam(\"' + team + '\")' }}" style="border: 0.5vw solid rgb(27, 168, 50);">{{ team.split("frc")[1] }}
+                {% else %}
+                    <button class="team" id="{{ team }}" onclick="{{ 'selectTeam(\"' + team + '\")' }}" style="border: 0.5vw solid rgb(51, 5, 158);">{{ team.split("frc")[1] }}
+                {% endif %}
             {% endfor %}
         </div>
     {% endwith %}

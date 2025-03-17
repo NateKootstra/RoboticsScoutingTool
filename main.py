@@ -6,11 +6,12 @@ from flask import Flask, render_template, send_from_directory, url_for, make_res
 from datetime import datetime
 
 import tbaapi
+import datamanager 
 from accounts import authenticate, getName, getAdmin, getAccounts, deleteUser, addUser
 from events import getEvents, addEvent, removeEvent, updateEvents
 
 
-domain = 'http://127.0.0.1:5001'
+domain = 'http://10.126.59.3:5001'
 app = Flask(__name__)
 year = tbaapi.Year(tbaapi.currentYear)
 
@@ -76,13 +77,35 @@ def get_full_event_list():
     return []
 app.jinja_env.globals.update(get_full_event_list=get_full_event_list)
 
-# Returns all events in the region.
+# Returns all events in the district.
 def get_events_in_district():
     team = request.cookies["team"]
     if authenticate(team, request.cookies["username"], request.cookies["password"]) and getAdmin(team, request.cookies["username"]):
         return tbaapi.District(tbaapi.Team(int(team)).get_district_cached()["key"]).get_events()
     return []
 app.jinja_env.globals.update(get_events_in_district=get_events_in_district)
+
+# Get the match lock.
+def get_lock():
+    if authenticate(request.cookies["team"], request.cookies["username"], request.cookies["password"]):
+        return datamanager.getLock(request.cookies["team"], request.cookies["event"], request.cookies["match"])
+    return []
+app.jinja_env.globals.update(get_lock=get_lock)
+
+# Get the teams in a given event.
+def get_teams_in_event():
+    team = request.cookies["team"]
+    if authenticate(team, request.cookies["username"], request.cookies["password"]):
+        teams = tbaapi.Event(request.cookies["pitevent"]).get_teams()
+        scouted = datamanager.getTeams(team, request.cookies["pitevent"])
+        for team in teams:
+            if team["key"] in scouted:
+                team["scouted"] = True
+            else:
+                team["scouted"] = False
+        return teams
+    return []
+app.jinja_env.globals.update(get_teams_in_event=get_teams_in_event)
 
 
 # Public pages:
@@ -116,7 +139,7 @@ def account():
     return redirect(f'{domain}/signin')
 
     
-# Scout menu..
+# Scout menu.
 @app.route('/scout')
 def scout():
     if "team" in request.cookies.keys():
@@ -135,6 +158,21 @@ def scout():
                         return render_template('select_match.html')
                 else:
                     return render_template('select_event.html')
+    return redirect(f'{domain}/signin')
+
+# Pitscout menu.
+@app.route('/pitscout')
+def pitscout():
+    if "team" in request.cookies.keys():
+        if authenticate(request.cookies["team"], request.cookies["username"], request.cookies["password"]):
+            if getAdmin(request.cookies["team"], request.cookies["username"]):
+                return render_template('scout_admin.html')
+            else:
+                if "pitevent" in request.cookies.keys():
+                    if "pitteam" in request.cookies.keys():
+                        return render_template('pitscout.html')
+                    return render_template('pitscout_select_team.html')
+                return render_template('pitscout_select_event.html')
     return redirect(f'{domain}/signin')
 
 
@@ -227,6 +265,16 @@ def select_event(event):
     # Return response.
     return response
 
+# Select the event you wish to pitscout.
+@app.route('/pitselectevent/<event>')
+def pit_select_event(event):
+    response = make_response(redirect(f'{domain}/pitscout'))
+    # Select event only if the user is verified as a non-admin user.
+    if authenticate(request.cookies["team"], request.cookies["username"], request.cookies["password"]) and not getAdmin(request.cookies["team"], request.cookies["username"]):
+        response.set_cookie('pitevent', event)
+    # Return response.
+    return response
+
 # Select the match you wish to scout.
 @app.route('/selectmatch/<match>')
 def select_match(match):
@@ -243,7 +291,20 @@ def select_team(team):
     response = make_response(redirect(f'{domain}/scout'))
     # Select event only if the user is verified as a non-admin user.
     if authenticate(request.cookies["team"], request.cookies["username"], request.cookies["password"]) and not getAdmin(request.cookies["team"], request.cookies["username"]):
-        response.set_cookie('teamscout', team)
+        if not team in get_lock():
+            response.set_cookie('teamscout', team)
+            datamanager.lock(request.cookies["team"], request.cookies["event"], request.cookies["match"], team)
+    # Return response.
+    return response
+
+# Select the team you wish to scout.
+@app.route('/pitselectteam/<team>')
+def pit_select_team(team):
+    response = make_response(redirect(f'{domain}/pitscout'))
+    # Select event only if the user is verified as a non-admin user.
+    if authenticate(request.cookies["team"], request.cookies["username"], request.cookies["password"]) and not getAdmin(request.cookies["team"], request.cookies["username"]):
+        if not team in datamanager.getTeams(request.cookies["team"], request.cookies["pitevent"]):
+            response.set_cookie('pitteam', team)
     # Return response.
     return response
 
@@ -254,6 +315,21 @@ def unscout(level):
     # Authenticate.
     if authenticate(request.cookies["team"], request.cookies["username"], request.cookies["password"]) and not getAdmin(request.cookies["team"], request.cookies["username"]):
         response.delete_cookie(level)
+        if level == "teamscout":
+            try:
+                datamanager.unlock(request.cookies["team"], request.cookies["event"], request.cookies["match"], request.cookies["teamscout"])
+            except:
+                pass
+    # Return response.
+    return response
+
+# Go back in pit scouting menu.
+@app.route('/pitunscout/<level>')
+def pitunscout(level):
+    response = make_response(redirect(f'{domain}/pitscout'))
+    # Authenticate.
+    if authenticate(request.cookies["team"], request.cookies["username"], request.cookies["password"]) and not getAdmin(request.cookies["team"], request.cookies["username"]):
+        response.delete_cookie("pit" + level)
     # Return response.
     return response
 
@@ -276,7 +352,18 @@ def submitdata(data):
         response.delete_cookie('match')
         response.delete_cookie('teamscout')
         response.delete_cookie('started')
-    print(data)
+    datamanager.save(request.cookies["team"], request.cookies["event"], request.cookies["match"], request.cookies["teamscout"], request.cookies["username"], data)
+    # Return response.
+    return response
+
+# Submit data.
+@app.route('/pitsubmit/<data>')
+def pitsubmitdata(data):
+    response = make_response(redirect(f'{domain}/pitscout'))
+    # Authenticate.
+    if authenticate(request.cookies["team"], request.cookies["username"], request.cookies["password"]) and not getAdmin(request.cookies["team"], request.cookies["username"]):
+        response.delete_cookie('pitteam')
+    datamanager.save(request.cookies["team"], request.cookies["pitevent"], "pitscout", request.cookies["pitteam"], request.cookies["username"], data)
     # Return response.
     return response
 
@@ -461,7 +548,7 @@ app.jinja_env.globals.update(get_rankings_in_district=get_rankings_in_district)
 
 # Return the teams at a given event.
 @app.route('/endpoint/teams/event/<event_key>')
-def get_teams_in_event(event_key):
+def get_teams_in_event_endpoint(event_key):
     # Get teams.
     teams = tbaapi.Event(event_key).get_teams()
 
